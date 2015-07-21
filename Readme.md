@@ -5,6 +5,7 @@
 ### Supported tags and respective Dockerfile links
 
   -  `:latest` (default)
+  -  `:1.5`
 
 ### Base docker image
 

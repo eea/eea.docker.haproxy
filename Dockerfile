@@ -21,7 +21,7 @@ ENV STATS_PORT=1936 \
     FRONTEND_PORT=80 \
     COOKIES_ENABLED=false \
     BACKEND_NAME=http-backend \
-    BACKEND_SERVERS=localhost:80 \
+    BACKEND_SERVERS=0.0.0.0:80 \
     BALANCE=roundrobin
 
 CMD ["start"]

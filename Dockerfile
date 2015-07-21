@@ -6,7 +6,6 @@ RUN apt-get update && \
 	apt-get install -y ca-certificates && \
 	apt-get install -y rsyslog && \
 	apt-get install -y python && \
-	apt-get install -y procps && \
 	apt-get clean && \
 	mv /usr/local/etc/haproxy /etc/haproxy
 

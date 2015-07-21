@@ -1,0 +1,10 @@
+nodeserver:
+    image: razvan3895/nodeserver
+
+haproxy:
+    image: eeacms/haproxy:latest
+    links:
+        - nodeserver
+    ports:
+        - "80:80"
+        - "1936:1936"

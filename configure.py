@@ -1,4 +1,5 @@
 import os
+import socket
 
 
 with open("/etc/haproxy/haproxy.cfg", "a") as f:
@@ -31,11 +32,36 @@ with open("/etc/haproxy/haproxy.cfg", "a") as f:
     else:
         cookies = ""
 
-    for index, backend_server in enumerate(os.environ['BACKEND_SERVERS'].split(' ')):
-        host = backend_server.split(':')[0]
-        port = backend_server.split(':')[1]
-        backend_conf += """\
-        server http-server%d %s:%s %s check\n""" % (index, host, port, cookies)
+    hosts_from_file = False
+    index = 1
+
+    try:
+        hosts = open("/etc/hosts")
+    except:
+        hosts = None
+
+    if hosts:
+        localhost = socket.gethostbyname(socket.gethostname())
+        existing_hosts = []
+
+        for host in hosts:
+            if "0.0.0.0" in host or "127.0.0.1" in host or localhost in host or "::" in host:
+                continue
+            hosts_from_file = True
+            host = host.split('\t')[0]
+            if host in existing_hosts:
+                continue
+            existing_hosts.append(host)
+            backend_conf += """        server http-server%d %s:80 %s check\n""" % (index, host, cookies)
+            index += 1
+
+    if hosts_from_file is False:
+        for index, backend_server in enumerate(os.environ['BACKEND_SERVERS'].split(' ')):
+            host = backend_server.split(':')[0]
+            port = backend_server.split(':')[1]
+            backend_conf += """\
+            server http-server%d %s:%s %s check\n""" % (index, host, port, cookies)
+
     print >> f
     print >> f, listen_conf
     print >> f, frontend_conf

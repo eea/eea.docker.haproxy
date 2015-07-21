@@ -48,11 +48,12 @@ with open("/etc/haproxy/haproxy.cfg", "a") as f:
             if "0.0.0.0" in host or "127.0.0.1" in host or localhost in host or "::" in host:
                 continue
             hosts_from_file = True
-            host = host.split('\t')[0]
-            if host in existing_hosts:
+            host_ip = host.split()[0]
+            host_name = host.split()[1]
+            if host_ip in existing_hosts:
                 continue
-            existing_hosts.append(host)
-            backend_conf += """        server http-server%d %s:80 %s check\n""" % (index, host, cookies)
+            existing_hosts.append(host_ip)
+            backend_conf += """        server http-server%d %s:80 %s check\n""" % (index, host_name, cookies)
             index += 1
 
     if hosts_from_file is False:

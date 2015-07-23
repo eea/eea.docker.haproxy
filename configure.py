@@ -87,7 +87,7 @@ with open("/etc/haproxy/haproxy.cfg", "a") as configuration:
             index += 1
 
     if sys.argv[1] == "env":
-        for index, backend_server in enumerate(os.environ['BACKEND_SERVERS'].split(' ')):
+        for index, backend_server in enumerate(os.environ['BACKENDS'].split(' ')):
             host = backend_server.split(':')[0]
             port = backend_server.split(':')[1]
             backend_conf += """\

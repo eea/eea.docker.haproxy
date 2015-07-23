@@ -4,7 +4,7 @@ set -e
 
 if ! test -e /etc/haproxy/haproxy.cfg; then
 	cp /tmp/haproxy_default.cfg /etc/haproxy/haproxy.cfg
-	if [ ! -z "$BACKEND_SERVERS" ]; then
+	if [ ! -z "$BACKENDS" ]; then
 		python /configure.py env
 	else
 		python /configure.py hosts

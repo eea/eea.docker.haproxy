@@ -1,8 +1,42 @@
 import os
 import socket
+import sys
 
 
-with open("/etc/haproxy/haproxy.cfg", "a") as f:
+if sys.argv[1] == "update":
+    configuration = open("/etc/haproxy/haproxy.cfg", "a")
+    index = 1
+    backend_conf = ""
+
+    try:
+        hosts = open("/etc/hosts")
+    except:
+        exit(0)
+
+    localhost = socket.gethostbyname(socket.gethostname())
+    existing_hosts = []
+    if os.environ['COOKIES_ENABLED'].lower() == "true":
+        cookies = "cookie value"
+    else:
+        cookies = ""
+
+    for host in hosts:
+        if "0.0.0.0" in host or "127.0.0.1" in host or localhost in host or "::" in host:
+            continue
+        host_ip = host.split()[0]
+        if host_ip in existing_hosts:
+            continue
+        existing_hosts.append(host_ip)
+        backend_conf += """        server http-server%d %s:80 %s check\n""" % (index, host_ip, cookies)
+        index += 1
+
+    print >> configuration, backend_conf
+
+    exit(0)
+
+
+
+with open("/etc/haproxy/haproxy.cfg", "a") as configuration:
     listen_conf = """listen stats
         bind *:%s
         stats enable
@@ -32,38 +66,34 @@ with open("/etc/haproxy/haproxy.cfg", "a") as f:
     else:
         cookies = ""
 
-    hosts_from_file = False
-    index = 1
+    if sys.argv[1] == "hosts":
+        try:
+            hosts = open("/etc/hosts")
+        except:
+            exit(0)
 
-    try:
-        hosts = open("/etc/hosts")
-    except:
-        hosts = None
-
-    if hosts:
+        index = 1
         localhost = socket.gethostbyname(socket.gethostname())
         existing_hosts = []
 
         for host in hosts:
             if "0.0.0.0" in host or "127.0.0.1" in host or localhost in host or "::" in host:
                 continue
-            hosts_from_file = True
             host_ip = host.split()[0]
-            host_name = host.split()[1]
             if host_ip in existing_hosts:
                 continue
             existing_hosts.append(host_ip)
-            backend_conf += """        server http-server%d %s:80 %s check\n""" % (index, host_name, cookies)
+            backend_conf += """        server http-server%d %s:80 %s check\n""" % (index, host_ip, cookies)
             index += 1
 
-    if hosts_from_file is False:
+    if sys.argv[1] == "env":
         for index, backend_server in enumerate(os.environ['BACKEND_SERVERS'].split(' ')):
             host = backend_server.split(':')[0]
             port = backend_server.split(':')[1]
             backend_conf += """\
             server http-server%d %s:%s %s check\n""" % (index, host, port, cookies)
 
-    print >> f
-    print >> f, listen_conf
-    print >> f, frontend_conf
-    print >> f, backend_conf
+    print >> configuration
+    print >> configuration, listen_conf
+    print >> configuration, frontend_conf
+    print >> configuration, backend_conf

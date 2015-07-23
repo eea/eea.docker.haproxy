@@ -28,8 +28,13 @@
 
     $ docker run --env BACKEND_SERVERS="172.17.1.83:80 172.17.1.84:80" eeacms/haproxy:latest
 
-Using the `BACKEND_SERVERS` variable is the quickest way to start a container. The servers are written as `server_ip:server_listening_port`, separated by spaces (and enclosed in quotes, to avoid issues). The contents of the variable are evaluated in a python script that writes the HAProxy configuration file automatically. By default, the `BACKEND_SERVERS` variable is set to `localhost:80`.
+Using the `BACKEND_SERVERS` variable is a way to quickstart the container. The servers are written as `server_ip:server_listening_port`, separated by spaces (and enclosed in quotes, to avoid issues). The contents of the variable are evaluated in a python script that writes the HAProxy configuration file automatically. By default, the `BACKEND_SERVERS` variable is not set.
 
+### Link this container to one or more application containers
+
+    $ docker run --link app_instance_1 --link app_instance_2 eeacms/haproxy:latest
+
+When linking containers with the `--link` flag, entries in `/etc/hosts` are automatically added by `docker`. This image is configured so in absence of a `haproxy.cfg` file and when the `BACKEND_SERVERS` variable is not set it will automatically parse `/etc/hosts` and create and load the configuration for `haproxy`. In this scenario, the file `/etc/hosts` will be monitored and everytime it is modified (for example when restarting a linked container) configuration for `haproxy` will be automatically recreated and reloaded.
 
 ### Use a custom configuration file mounted as a volume 
 
@@ -69,7 +74,7 @@ and then run
   * `FRONTEND_PORT` The port to bind the frontend to - default `80`
   * `COOKIES_ENABLED` The option to enable or disable cookie-based sessions (`true` stands for enabled, `false` or anything else for disabled) - default `false`
   * `BACKEND_NAME` The label of the backend - default `http-backend`
-  * `BACKEND_SERVERS` The list of `server_ip:server_listening_port` to be load-balanced by HAProxy, separated by space - default `0.0.0.0:80`
+  * `BACKEND_SERVERS` The list of `server_ip:server_listening_port` to be load-balanced by HAProxy, separated by space - by default it is not set
   * `BALANCE` The algorithm used for load-balancing - default `roundrobin`
 
 ### Docker Compose example
@@ -93,7 +98,7 @@ The application can be scaled to use more server instances, with `docker-compose
 
     $ docker-compose scale nodeserver=<number of instances> haproxy=1
 
-The results can be checked in a browser, navigating to `localhost`. By refresing the page multiple times it is noticeable that the IP of the server that served the page changes, as HAProxy switches between them. The stats page can be accessed at `localhost:1936` where you have to log in using the `STATS_AUTH` authentication details.
+The results can be checked in a browser, navigating to `localhost`. By refresing the page multiple times it is noticeable that the IP of the server that served the page changes, as HAProxy switches between them. The stats page can be accessed at `localhost:1936` where you have to log in using the `STATS_AUTH` authentication details (default `admin:admin`).
 
 ## Copyright and license
 

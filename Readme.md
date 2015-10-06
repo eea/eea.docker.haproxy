@@ -23,8 +23,8 @@ your non-related EEA projects.
 
 ### Installation
 
-1. Install [Docker](https://www.docker.com/).
-
+1. Install [Docker](https://www.docker.com/) **Please note**: version must not be 1.8.x due to docker issue [#16619](https://github.com/docker/docker/issues/16619) 
+2. Install [Docker Compose](https://docs.docker.com/compose/install/).
 
 ## Usage
 

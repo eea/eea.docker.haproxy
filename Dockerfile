@@ -23,6 +23,7 @@ ENV STATS_PORT=1936 \
     FRONTEND_PORT=80 \
     COOKIES_ENABLED=false \
     BACKEND_NAME=http-backend \
-    BALANCE=roundrobin
+    BALANCE=roundrobin \
+    SERVICE_NAMES= 
 
 CMD ["start"]

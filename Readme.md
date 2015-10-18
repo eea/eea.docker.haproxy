@@ -127,6 +127,7 @@ preferably by supplying an `.env` file in the appropriate tag.
   * `BACKEND_NAME` The label of the backend - default `http-backend`
   * `BACKENDS` The list of `server_ip:server_listening_port` to be load-balanced by HAProxy, separated by space - by default it is not set
   * `BALANCE` The algorithm used for load-balancing - default `roundrobin`
+  * `SERVICE_NAMES` An optional prefix for services to be included when discovering services. - by default it is not set
 
 
 ## Copyright and license

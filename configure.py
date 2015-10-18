@@ -7,6 +7,7 @@ if sys.argv[1] == "update":
     configuration = open("/etc/haproxy/haproxy.cfg", "a")
     index = 1
     backend_conf = ""
+    service_names = os.environ['SERVICE_NAMES'].split(';')
 
     try:
         hosts = open("/etc/hosts")
@@ -23,8 +24,11 @@ if sys.argv[1] == "update":
     for host in hosts:
         if "0.0.0.0" in host or "127.0.0.1" in host or localhost in host or "::" in host:
             continue
-        host_ip = host.split()[0]
-        if host_ip in existing_hosts:
+        part = host.split()
+        if len(part) < 2:
+            continue
+        (host_ip, host_name) = part[0:2]
+        if host_ip in existing_hosts or not any(host_name.startswith(name) for name in service_names):
             continue
         existing_hosts.append(host_ip)
         backend_conf += """        server http-server%d %s:80 %s check\n""" % (index, host_ip, cookies)
@@ -66,6 +70,8 @@ with open("/etc/haproxy/haproxy.cfg", "a") as configuration:
     else:
         cookies = ""
 
+    service_names = os.environ['SERVICE_NAMES'].split(';')
+
     if sys.argv[1] == "hosts":
         try:
             hosts = open("/etc/hosts")
@@ -79,8 +85,11 @@ with open("/etc/haproxy/haproxy.cfg", "a") as configuration:
         for host in hosts:
             if "0.0.0.0" in host or "127.0.0.1" in host or localhost in host or "::" in host:
                 continue
-            host_ip = host.split()[0]
-            if host_ip in existing_hosts:
+            part = host.split()
+            if len(part) < 2:
+                continue
+            (host_ip, host_name) = part[0:2]
+            if host_ip in existing_hosts or not any(host_name.startswith(name) for name in service_names):
                 continue
             existing_hosts.append(host_ip)
             backend_conf += """        server http-server%d %s:80 %s check\n""" % (index, host_ip, cookies)

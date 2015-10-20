@@ -103,6 +103,28 @@ and then run
 
     $ docker build -t your-image-name:your-image-tag path/to/Dockerfile
 
+### Run with Docker Compose and multiple web apps
+
+If you have multiple apps running on port 80 HAProxy will by default proxy them all. If you want
+to restrict it to just one app then specify the `SERVICE_NAMES` environment variable.
+
+    haproxy:
+      image: eeacms/haproxy
+      links:
+      - webapp
+      ports:
+      - "80:80"
+      - "1936:1936"
+      environment:
+      - SERVICE_NAMES=webapp
+
+    webapp:
+      image: razvan3895/nodeserver
+
+    secondwebapp:
+      image: razvan3895/nodeserver
+
+Note that haproxy will not serve requests from `secondwebapp` because of the `SERVICE_NAMES` variable.
 
 ### Upgrade
 
@@ -127,6 +149,7 @@ preferably by supplying an `.env` file in the appropriate tag.
   * `BACKEND_NAME` The label of the backend - default `http-backend`
   * `BACKENDS` The list of `server_ip:server_listening_port` to be load-balanced by HAProxy, separated by space - by default it is not set
   * `BALANCE` The algorithm used for load-balancing - default `roundrobin`
+  * `SERVICE_NAMES` An optional prefix for services to be included when discovering services. - by default it is not set
 
 
 ## Copyright and license

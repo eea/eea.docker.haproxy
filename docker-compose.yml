@@ -1,5 +1,5 @@
 haproxy:
-  image: eeacms/haproxy:latest
+  image: eeacms/haproxy
   links:
   - webapp
   ports:
@@ -7,4 +7,4 @@ haproxy:
   - "1936:1936"
 
 webapp:
-  image: razvan3895/nodeserver
+  image: eeacms/hello

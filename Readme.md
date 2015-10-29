@@ -42,7 +42,7 @@ Here is a basic example of a `docker-compose.yml` file using the `eeacms/haproxy
       - "1936:1936"
 
     webapp:
-      image: razvan3895/nodeserver
+      image: eeacms/hello
 
 
 The application can be scaled to use more server instances, with `docker-compose scale`:
@@ -119,10 +119,10 @@ to restrict it to just one app then specify the `SERVICE_NAMES` environment vari
       - SERVICE_NAMES=webapp
 
     webapp:
-      image: razvan3895/nodeserver
+      image: eeacms/hello
 
     secondwebapp:
-      image: razvan3895/nodeserver
+      image: eeacms/hello
 
 Note that haproxy will not serve requests from `secondwebapp` because of the `SERVICE_NAMES` variable.
 

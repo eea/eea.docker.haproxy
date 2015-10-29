@@ -1,6 +1,5 @@
 FROM haproxy:latest
-
-MAINTAINER "Razvan Chitu" <razvan.chitu@eaudeweb.ro>
+MAINTAINER "Alin Voinea" <alin.voinea@eaudeweb.ro>
 
 RUN apt-get update && \
     apt-get install -y ca-certificates && \
@@ -24,6 +23,6 @@ ENV STATS_PORT=1936 \
     COOKIES_ENABLED=false \
     BACKEND_NAME=http-backend \
     BALANCE=roundrobin \
-    SERVICE_NAMES= 
+    SERVICE_NAMES=
 
 CMD ["start"]

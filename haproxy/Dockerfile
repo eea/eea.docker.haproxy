@@ -2,27 +2,27 @@ FROM haproxy:latest
 MAINTAINER "Alin Voinea" <alin.voinea@eaudeweb.ro>
 
 RUN apt-get update && \
-    apt-get install -y ca-certificates && \
-    apt-get install -y rsyslog && \
-    apt-get install -y python && \
-    apt-get install -y inotify-tools && \
+    apt-get install -y --no-install-recommends \
+      ca-certificates \
+      python3-pip \
+      inotify-tools && \
     apt-get clean && \
-    mv /usr/local/etc/haproxy /etc/haproxy
+    rm -rf /var/lib/apt/lists/* && \
+    pip3 install chaperone
 
-COPY etc/haproxy/haproxy_default.cfg        /tmp/haproxy_default.cfg
-COPY etc/rsyslog.d/49-haproxy.conf          /etc/rsyslog.d/49-haproxy.conf
-COPY configure.py                           /configure.py
-COPY start.sh                               /usr/bin/start
-COPY reload.sh                              /usr/bin/reload
-COPY track_hosts.sh                         /usr/bin/track_hosts
+RUN groupadd -r haproxy && useradd -r -g haproxy haproxy
 
-ENV STATS_PORT=1936 \
-    STATS_AUTH=admin:admin \
-    FRONTEND_NAME=http-frontend \
-    FRONTEND_PORT=80 \
-    COOKIES_ENABLED=false \
-    BACKEND_NAME=http-backend \
-    BALANCE=roundrobin \
-    SERVICE_NAMES=
+RUN ln -s /usr/local/etc/haproxy /etc/haproxy
+RUN chown -R haproxy:haproxy /usr/local/etc/haproxy
 
-CMD ["start"]
+COPY src/chaperone.conf         /etc/chaperone.d/chaperone.conf
+COPY src/haproxy.cfg            /tmp/haproxy.cfg
+COPY src/docker-setup.sh        /docker-setup.sh
+COPY src/configure.py           /configure.py
+COPY src/reload.sh              /usr/bin/reload
+COPY src/track_hosts.sh         /track_hosts
+
+USER haproxy
+
+ENTRYPOINT ["/usr/local/bin/chaperone"]
+CMD ["--user", "haproxy"]

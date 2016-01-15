@@ -7,13 +7,15 @@ RUN apt-get update && \
       python3-pip \
       inotify-tools && \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists/* && \
-    pip3 install chaperone
+    rm -rf /var/lib/apt/lists/*
+
+RUN pip3 install chaperone
 
 RUN groupadd -r haproxy && useradd -r -g haproxy haproxy
 
+RUN mkdir -p /var/log/haproxy
 RUN ln -s /usr/local/etc/haproxy /etc/haproxy
-RUN chown -R haproxy:haproxy /usr/local/etc/haproxy
+RUN chown -R haproxy:haproxy /usr/local/etc/haproxy /var/log/haproxy
 
 COPY src/chaperone.conf         /etc/chaperone.d/chaperone.conf
 COPY src/haproxy.cfg            /tmp/haproxy.cfg

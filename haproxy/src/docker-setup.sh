@@ -5,8 +5,6 @@ if test -e /etc/haproxy/haproxy.cfg; then
   exit 0
 fi
 
-cp /tmp/haproxy.cfg /etc/haproxy/haproxy.cfg
-
 if [ ! -z "$BACKENDS" ]; then
   # Backend provided via $BACKENDS env
   python3 /configure.py env

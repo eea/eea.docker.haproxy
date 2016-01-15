@@ -99,6 +99,10 @@ Additionally, you can supply your own static `haproxy.cfg` file by extending the
     FROM eeacms/haproxy:latest
     COPY conf.d/haproxy.cfg /etc/haproxy/haproxy.cfg
 
+    USER root
+    RUN apt-get install...
+    USER haproxy
+
 and then run
 
     $ docker build -t your-image-name:your-image-tag path/to/Dockerfile
@@ -118,13 +122,17 @@ to restrict it to just one app then specify the `SERVICE_NAMES` environment vari
       environment:
       - SERVICE_NAMES=webapp
 
-    webapp:
+    first_webapp:
       image: eeacms/hello
 
-    secondwebapp:
+    second_webapp:
       image: eeacms/hello
 
-Note that haproxy will not serve requests from `secondwebapp` because of the `SERVICE_NAMES` variable.
+    third_app:
+      image: eeacms/hello
+
+Note that haproxy will not serve requests from `third_app` because of the `SERVICE_NAMES` variable.
+You could also say: `SERVICE_NAMES=first_webapp second_webapp`
 
 ### Upgrade
 
@@ -133,24 +141,32 @@ Note that haproxy will not serve requests from `secondwebapp` because of the `SE
 
 ## Supported environment variables ##
 
-### haproxy.env ###
-
 As HAProxy has close to no purpose by itself, this image should be used in
 combination with others (for example with [Docker Compose](https://docs.docker.com/compose/)).
 HAProxy can be configured by modifying the following env variables,
-either when running the container or in a `docker-compose.yml` file,
-preferably by supplying an `.env` file in the appropriate tag.
+either when running the container or in a `docker-compose.yml` file.
 
   * `STATS_PORT` The port to bind statistics to - default `1936`
   * `STATS_AUTH` The authentication details (written as `user:password` for the statistics page - default `admin:admin`
   * `FRONTEND_NAME` The label of the frontend - default `http-frontend`
-  * `FRONTEND_PORT` The port to bind the frontend to - default `80`
+  * `FRONTEND_PORT` The port to bind the frontend to - default `5000`
   * `COOKIES_ENABLED` The option to enable or disable cookie-based sessions (`true` stands for enabled, `false` or anything else for disabled) - default `false`
   * `BACKEND_NAME` The label of the backend - default `http-backend`
   * `BACKENDS` The list of `server_ip:server_listening_port` to be load-balanced by HAProxy, separated by space - by default it is not set
+  * `BACKENDS_PORT` Port to use when auto-discovering backends, or when `BACKENDS` are specified without port - by default `80`
   * `BALANCE` The algorithm used for load-balancing - default `roundrobin`
-  * `SERVICE_NAMES` An optional prefix for services to be included when discovering services. - by default it is not set
+  * `SERVICE_NAMES` An optional prefix for services to be included when discovering services separated by space. - by default it is not set
+  * `LOGGING` Override logging ip address:port - default is udp `127.0.0.1:514` inside container
+  
 
+## Logging
+
+By default there are no logs from haproxy because they are sent on UDP port 514 inside container.
+You can override this behaviour by providing the `LOGGING` environment variable:
+
+    docker run -e LOGGING=logs.example.com:5005 -e BACKENDS=www1 www2 www3 eeacms/haproxy
+
+Now make sure that `logs.example.com` listen on UDP port `5005`
 
 ## Copyright and license
 

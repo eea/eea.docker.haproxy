@@ -1,6 +1,5 @@
 haproxy:
-#image: eeacms/haproxy
-  build: haproxy
+  image: eeacms/haproxy
   links:
   - webapp
   ports:
@@ -9,8 +8,7 @@ haproxy:
   environment:
   - SERVICE_NAMES=webapp
   - BACKENDS_PORT=8080
-  volumes:
-  - /etc
+#  - LOGGING=10.0.0.22
 
 webapp:
   image: eeacms/hello

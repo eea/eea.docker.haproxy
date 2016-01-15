@@ -6,12 +6,13 @@ FRONTEND_NAME = os.environ.get('FRONTEND_NAME', 'http-frontend')
 FRONTEND_PORT = os.environ.get('FRONTEND_PORT', '5000')
 BACKEND_NAME = os.environ.get('BACKEND_NAME', 'http-backend')
 BALANCE = os.environ.get('BALANCE', 'roundrobin')
-SERVICE_NAMES = os.environ.get('SERVICE_NAMES', '').split(';')
+SERVICE_NAMES = os.environ.get('SERVICE_NAMES', '')
 COOKIES_ENABLED = (os.environ.get('COOKIES_ENABLED', 'false').lower() == "true")
 STATS_PORT = os.environ.get('STATS_PORT', '1936')
 STATS_AUTH = os.environ.get('STATS_AUTH', 'admin:admin')
 BACKENDS = os.environ.get('BACKENDS', '').split(' ')
 BACKENDS_PORT = os.environ.get('BACKENDS_PORT', '80')
+LOGGING = os.environ.get('LOGGING', '')
 
 listen_conf = """
   listen stats
@@ -44,7 +45,13 @@ backend_conf_plus = """
     server http-server%(index)d %(host)s:%(port)s %(cookies)s check
 """
 
-with open("/etc/haproxy/haproxy.cfg", "a") as configuration:
+with open("/etc/haproxy/haproxy.cfg", "w") as configuration:
+
+    with open("/tmp/haproxy.cfg", "r") as default:
+        conf = default.read()
+        if LOGGING:
+            conf = conf.replace('127.0.0.1', LOGGING)
+        configuration.write(conf)
 
     backend_conf = backend_conf % dict(backend=BACKEND_NAME, balance=BALANCE)
 
@@ -53,7 +60,11 @@ with open("/etc/haproxy/haproxy.cfg", "a") as configuration:
     else:
         cookies = ""
 
-    service_names = SERVICE_NAMES
+    if ';' in SERVICE_NAMES:
+        #BBB
+        service_names = SERVICE_NAMES.split(';')
+    else:
+        service_names = SERVICE_NAMES.split()
 
     if sys.argv[1] == "hosts":
         try:
@@ -80,7 +91,10 @@ with open("/etc/haproxy/haproxy.cfg", "a") as configuration:
                 continue
 
             (host_ip, host_name) = part[0:2]
-            if host_ip in existing_hosts or not any(host_name.startswith(name) for name in service_names):
+            if host_ip in existing_hosts:
+                continue
+
+            if service_names and not any(name in host_name for name in service_names):
                 continue
 
             existing_hosts.add(host_ip)

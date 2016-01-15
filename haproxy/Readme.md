@@ -1,16 +1,25 @@
 ## HAProxy Docker image
 
- - HAProxy 1.5.14
+ - HAProxy 1.6.3
 
 This image is generic, thus you can obviously re-use it within
 your non-related EEA projects.
 
+### Warning
+
+For security reasons, latest builds of this image run HAProxy on default port **5000**
+instead of **80**. Please update your deployment accordingly.
+
 ### Supported tags and respective Dockerfile links
 
-  -  `:latest` (default)
-  -  `:1.5`
+  - `:latest` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/blob/master/haproxy/Dockerfile) (default)
+  - `:1.6` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/blob/1.6/haproxy/Dockerfile)
+  - `:1.5` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/blob/1.5/haproxy/Dockerfile)
 
+### Changes
 
+ - [CHANGELOG.md](https://github.com/eea/eea.docker.haproxy/blob/master/CHANGELOG.md)
+ 
 ### Base docker image
 
  - [hub.docker.com](https://registry.hub.docker.com/u/eeacms/haproxy)

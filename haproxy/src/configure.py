@@ -8,6 +8,7 @@ BACKEND_NAME = os.environ.get('BACKEND_NAME', 'http-backend')
 BALANCE = os.environ.get('BALANCE', 'roundrobin')
 SERVICE_NAMES = os.environ.get('SERVICE_NAMES', '')
 COOKIES_ENABLED = (os.environ.get('COOKIES_ENABLED', 'false').lower() == "true")
+PROXY_PROTOCOL_ENABLED = (os.environ.get('PROXY_PROTOCOL_ENABLED', 'false').lower() == "true")
 STATS_PORT = os.environ.get('STATS_PORT', '1936')
 STATS_AUTH = os.environ.get('STATS_AUTH', 'admin:admin')
 BACKENDS = os.environ.get('BACKENDS', '').split(' ')
@@ -25,7 +26,7 @@ listen_conf = """
 
 frontend_conf = """
   frontend %(name)s
-    bind *:%(port)s accept-proxy
+    bind *:%(port)s %(accept_proxy)s
     mode http
     default_backend %(backend)s
 """
@@ -59,6 +60,11 @@ with open("/etc/haproxy/haproxy.cfg", "w") as configuration:
         cookies = "cookie value"
     else:
         cookies = ""
+
+    if PROXY_PROTOCOL_ENABLED:
+        accept_proxy = "accept-proxy"
+    else
+        accept_proxy = ""
 
     if ';' in SERVICE_NAMES:
         #BBB
@@ -120,6 +126,9 @@ with open("/etc/haproxy/haproxy.cfg", "w") as configuration:
 
     configuration.write(listen_conf % dict(port=STATS_PORT, auth=STATS_AUTH))
     configuration.write(frontend_conf % dict(
-        name=FRONTEND_NAME, port=FRONTEND_PORT, backend=BACKEND_NAME
+        name=FRONTEND_NAME,
+        port=FRONTEND_PORT,
+        backend=BACKEND_NAME,
+        accept_proxy=accept_proxy
     ))
     configuration.write(backend_conf)

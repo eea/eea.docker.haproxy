@@ -25,7 +25,7 @@ listen_conf = """
 
 frontend_conf = """
   frontend %(name)s
-    bind *:%(port)s
+    bind *:%(port)s accept-proxy
     mode http
     default_backend %(backend)s
 """

@@ -19,7 +19,7 @@ instead of **80**. Please update your deployment accordingly.
 ### Changes
 
  - [CHANGELOG.md](https://github.com/eea/eea.docker.haproxy/blob/master/CHANGELOG.md)
- 
+
 ### Base docker image
 
  - [hub.docker.com](https://registry.hub.docker.com/u/eeacms/haproxy)
@@ -32,7 +32,7 @@ instead of **80**. Please update your deployment accordingly.
 
 ### Installation
 
-1. Install [Docker](https://www.docker.com/) **Please note**: version must not be 1.8.x due to docker issue [#16619](https://github.com/docker/docker/issues/16619) 
+1. Install [Docker](https://www.docker.com/) **Please note**: version must not be 1.8.x due to docker issue [#16619](https://github.com/docker/docker/issues/16619)
 2. Install [Docker Compose](https://docs.docker.com/compose/install/).
 
 ## Usage
@@ -159,6 +159,7 @@ either when running the container or in a `docker-compose.yml` file.
   * `STATS_AUTH` The authentication details (written as `user:password` for the statistics page - default `admin:admin`
   * `FRONTEND_NAME` The label of the frontend - default `http-frontend`
   * `FRONTEND_PORT` The port to bind the frontend to - default `5000`
+  * `PROXY_PROTOCOL_ENABLED` The option to enable or disable accepting proxy protocol (`true` stands for enabled, `false` or anything else for disabled) - default `false`
   * `COOKIES_ENABLED` The option to enable or disable cookie-based sessions (`true` stands for enabled, `false` or anything else for disabled) - default `false`
   * `BACKEND_NAME` The label of the backend - default `http-backend`
   * `BACKENDS` The list of `server_ip:server_listening_port` to be load-balanced by HAProxy, separated by space - by default it is not set
@@ -166,7 +167,7 @@ either when running the container or in a `docker-compose.yml` file.
   * `BALANCE` The algorithm used for load-balancing - default `roundrobin`
   * `SERVICE_NAMES` An optional prefix for services to be included when discovering services separated by space. - by default it is not set
   * `LOGGING` Override logging ip address:port - default is udp `127.0.0.1:514` inside container
-  
+
 
 ## Logging
 

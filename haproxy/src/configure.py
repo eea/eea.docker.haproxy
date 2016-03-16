@@ -63,7 +63,7 @@ with open("/etc/haproxy/haproxy.cfg", "w") as configuration:
 
     if PROXY_PROTOCOL_ENABLED:
         accept_proxy = "accept-proxy"
-    else
+    else:
         accept_proxy = ""
 
     if ';' in SERVICE_NAMES:

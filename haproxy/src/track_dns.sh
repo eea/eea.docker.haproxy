@@ -8,5 +8,3 @@ if [ "$IPS_1" != "$IPS_2" ]; then
   echo "DNS backends changed: $IPS_2"
   reload
 fi
-
-echo "DNS Lookup"

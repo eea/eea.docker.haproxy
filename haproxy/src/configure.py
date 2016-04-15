@@ -82,7 +82,7 @@ if sys.argv[1] == "dns":
             ips.update(str(ip) for ip in records)
 
     with open('/etc/haproxy/dns.backends', 'w') as bfile:
-        bfile.write(' '.join(ips))
+        bfile.write(' '.join(sorted(ips)))
 
     for index, ip in enumerate(ips):
         backend_conf += backend_conf_plus % dict(

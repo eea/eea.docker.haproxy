@@ -87,7 +87,7 @@ if sys.argv[1] == "dns":
     for index, ip in enumerate(ips):
         backend_conf += backend_conf_plus % dict(
             index=index,
-            host=host,
+            host=ip,
             port=port,
             cookies=cookies)
 

@@ -1,6 +1,7 @@
 import os
 import socket
 import sys
+import dns.resolver
 
 ################################################################################
 # INIT
@@ -57,10 +58,55 @@ else:
 
 backend_conf = backend_conf % dict(backend=BACKEND_NAME, balance=BALANCE)
 
+
+################################################################################
+# Backends are resolved using internal or external DNS service
+################################################################################
+if sys.argv[1] == "dns":
+    for index, backend_server in enumerate(BACKENDS):
+        server_port = backend_server.split(':')
+        host = server_port[0]
+        port = server_port[1] if len(server_port) > 1 else BACKENDS_PORT
+
+        try:
+            ips = sorted(str(ip) for ip in dns.resolver.query(host))
+        except Exception as err:
+            print(err)
+            backend_conf += backend_conf_plus % dict(
+                    index=index,
+                    host=host,
+                    port=port,
+                    cookies=cookies)
+        else:
+            with open('/etc/haproxy/dns.backends', 'w') as bfile:
+                for ip in ips:
+                    bfile.write(ip)
+                    backend_conf += backend_conf_plus % dict(
+                        index=index,
+                        host=host,
+                        port=port,
+                        cookies=cookies)
+
+################################################################################
+# Backends provided via BACKENDS environment variable
+################################################################################
+
+elif sys.argv[1] == "env":
+    for index, backend_server in enumerate(BACKENDS):
+        server_port = backend_server.split(':')
+        host = server_port[0]
+        port = server_port[1] if len(server_port) > 1 else BACKENDS_PORT
+        backend_conf += backend_conf_plus % dict(
+                index=index,
+                host=host,
+                port=port,
+                cookies=cookies)
+
 ################################################################################
 # Look for backend within /etc/hosts
 ################################################################################
-if sys.argv[1] == "hosts":
+
+elif sys.argv[1] == "hosts":
     try:
         hosts = open("/etc/hosts")
     except:
@@ -107,33 +153,17 @@ if sys.argv[1] == "hosts":
         )
         index += 1
 
-################################################################################
-# Backends provided via BACKENDS environment variable
-################################################################################
-if sys.argv[1] == "env":
-    for index, backend_server in enumerate(BACKENDS):
-        server_port = backend_server.split(':')
-        host = server_port[0]
-        port = server_port[1] if len(server_port) > 1 else BACKENDS_PORT
-        backend_conf += backend_conf_plus % dict(
-                index=index,
-                host=host,
-                port=port,
-                cookies=cookies)
-
 if PROXY_PROTOCOL_ENABLED:
     accept_proxy = "accept-proxy"
 else:
     accept_proxy = ""
 
 with open("/etc/haproxy/haproxy.cfg", "w") as configuration:
-
     with open("/tmp/haproxy.cfg", "r") as default:
         conf = default.read()
         if LOGGING:
             conf = conf.replace('127.0.0.1', LOGGING)
         configuration.write(conf)
-
     configuration.write(listen_conf % dict(port=STATS_PORT, auth=STATS_AUTH))
     configuration.write(frontend_conf % dict(
         name=FRONTEND_NAME,

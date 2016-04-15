@@ -24,6 +24,7 @@ COPY src/docker-setup.sh        /docker-setup.sh
 COPY src/configure.py           /configure.py
 COPY src/reload.sh              /usr/bin/reload
 COPY src/track_hosts.sh         /track_hosts
+COPY src/track_dns.sh           /track_dns
 
 USER haproxy
 

@@ -5,11 +5,12 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
       ca-certificates \
       python3-pip \
+      dnsutils \
       inotify-tools && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install chaperone
+RUN pip3 install chaperone dnspython3
 
 RUN groupadd -r haproxy && useradd -r -g haproxy haproxy
 

@@ -63,13 +63,14 @@ backend_conf = backend_conf % dict(backend=BACKEND_NAME, balance=BALANCE)
 # Backends are resolved using internal or external DNS service
 ################################################################################
 if sys.argv[1] == "dns":
+    ips = set()
     for index, backend_server in enumerate(BACKENDS):
         server_port = backend_server.split(':')
         host = server_port[0]
         port = server_port[1] if len(server_port) > 1 else BACKENDS_PORT
 
         try:
-            ips = sorted(str(ip) for ip in dns.resolver.query(host))
+            records = dns.resolver.query(host)
         except Exception as err:
             print(err)
             backend_conf += backend_conf_plus % dict(
@@ -78,14 +79,17 @@ if sys.argv[1] == "dns":
                     port=port,
                     cookies=cookies)
         else:
-            with open('/etc/haproxy/dns.backends', 'w') as bfile:
-                for ip in ips:
-                    bfile.write(ip)
-                    backend_conf += backend_conf_plus % dict(
-                        index=index,
-                        host=host,
-                        port=port,
-                        cookies=cookies)
+            ips.update(str(ip) for ip in records)
+
+    with open('/etc/haproxy/dns.backends', 'w') as bfile:
+        bfile.write(' '.join(ips))
+
+    for index, ip in enumerate(ips):
+        backend_conf += backend_conf_plus % dict(
+            index=index,
+            host=host,
+            port=port,
+            cookies=cookies)
 
 ################################################################################
 # Backends provided via BACKENDS environment variable

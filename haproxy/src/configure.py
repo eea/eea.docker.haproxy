@@ -48,7 +48,7 @@ backend_conf = """
 """
 
 backend_conf_plus = """
-    server %(name)s-%(index)d %(host)s:%(port)s %(cookies)s check
+    server %(name)s-%(index)s %(host)s:%(port)s %(cookies)s check
 """
 
 health_conf = """

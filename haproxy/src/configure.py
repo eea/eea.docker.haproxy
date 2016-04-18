@@ -48,7 +48,7 @@ backend_conf = """
 """
 
 backend_conf_plus = """
-    server http-server%(index)d %(host)s:%(port)s %(cookies)s check
+    server %(name)s-%(index)d %(host)s:%(port)s %(cookies)s check
 """
 
 health_conf = """
@@ -79,6 +79,7 @@ if sys.argv[1] == "dns":
         except Exception as err:
             print(err)
             backend_conf += backend_conf_plus % dict(
+                    name=host.replace(".", "-"),
                     index=index,
                     host=host,
                     port=port,
@@ -89,9 +90,10 @@ if sys.argv[1] == "dns":
     with open('/etc/haproxy/dns.backends', 'w') as bfile:
         bfile.write(' '.join(sorted(ips)))
 
-    for index, ip in enumerate(ips):
+    for ip in ips:
         backend_conf += backend_conf_plus % dict(
-            index=index,
+            name=host.replace(".", "-"),
+            index=ip.replace(".", "-"),
             host=ip,
             port=port,
             cookies=cookies)
@@ -106,6 +108,7 @@ elif sys.argv[1] == "env":
         host = server_port[0]
         port = server_port[1] if len(server_port) > 1 else BACKENDS_PORT
         backend_conf += backend_conf_plus % dict(
+                name=host.replace(".", "-"),
                 index=index,
                 host=host,
                 port=port,
@@ -155,6 +158,7 @@ elif sys.argv[1] == "hosts":
         existing_hosts.add(host_ip)
         host_port = BACKENDS_PORT
         backend_conf += backend_conf_plus % dict(
+                name='http-server',
                 index=index,
                 host=host_ip,
                 port=host_port,

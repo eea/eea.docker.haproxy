@@ -1,6 +1,5 @@
 haproxy:
-  build: haproxy
-#  image: eeacms/haproxy
+  image: eeacms/haproxy
   links:
   - webapp
   ports:

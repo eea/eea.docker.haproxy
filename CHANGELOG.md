@@ -1,5 +1,9 @@
 # Changelog
 
+## 2016-04-18
+
+- Support for named backends resolved by an internal/external DNS service (e.g. when deployed using rancher-compose)
+
 ## 2016-01-15
 
 - Start HAProxy on port *5000* instead of *80*

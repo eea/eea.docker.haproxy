@@ -68,15 +68,22 @@ using the `STATS_AUTH` authentication details (default `admin:admin`).
 
 ### Run with backends specified as environment variable
 
-    $ docker run --env BACKENDS="192.168.1.5:80 192.168.1.6:80" eeacms/haproxy:latest
+    $ docker run --env BACKENDS="192.168.1.5:80 192.168.1.6:80" eeacms/haproxy
 
-Using the `BACKENDS` variable is a way to quickstart the container.
+Using the `BACKENDS` variable is a way to quick-start the container.
 The servers are written as `server_ip:server_listening_port`,
 separated by spaces (and enclosed in quotes, to avoid issues).
 The contents of the variable are evaluated in a python script that writes
 the HAProxy configuration file automatically.
 By default, the `BACKENDS` variable is not set.
 
+If there are multiple DNS records for one or more of your `BACKENDS` (e.g. when deployed using rancher-compose),
+you can use `DNS_ENABLED` environment variable. This way, haproxy will load-balance
+all of your backends instead of only the first entry found:
+
+  $ docker run --link=webapp -e BACKENDS="webapp" -e DNS_ENABLED=true eeacms/haproxy
+
+It will also automatically add/remove backends when you scale them.
 
 ### Link this container to one or more application containers
 
@@ -86,7 +93,7 @@ When linking containers with the `--link` flag, entries in `/etc/hosts`
 are automatically added by `docker`. This image is configured so in absence
 of a `haproxy.cfg` file and when the `BACKENDS` variable is not set it will
 automatically parse `/etc/hosts` and create and load the configuration for `haproxy`.
-In this scenario, the file `/etc/hosts` will be monitored and everytime it is
+In this scenario, the file `/etc/hosts` will be monitored and every time it is
 modified (for example when restarting a linked container) configuration for
 `haproxy` will be automatically recreated and reloaded.
 
@@ -168,7 +175,8 @@ either when running the container or in a `docker-compose.yml` file.
   * `BALANCE` The algorithm used for load-balancing - default `roundrobin`
   * `SERVICE_NAMES` An optional prefix for services to be included when discovering services separated by space. - by default it is not set
   * `LOGGING` Override logging ip address:port - default is udp `127.0.0.1:514` inside container
-
+  * `DNS_ENABLED` DNS lookup provided `BACKENDS`. Use this option when your backends are resolved by an internal/external DNS service (e.g. Rancher)
+  * `DNS_TTL` DNS lookup backends every $DNS_TTL minutes. Default 1 minute.
 
 ## Logging
 

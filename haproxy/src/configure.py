@@ -51,6 +51,11 @@ backend_conf_plus = """
     server http-server%(index)d %(host)s:%(port)s %(cookies)s check
 """
 
+health_conf = """
+listen default
+  bind *:4242
+"""
+
 if COOKIES_ENABLED:
     cookies = "cookie value"
 else:
@@ -176,3 +181,4 @@ with open("/etc/haproxy/haproxy.cfg", "w") as configuration:
         accept_proxy=accept_proxy
     ))
     configuration.write(backend_conf)
+    configuration.write(health_conf)

@@ -2,6 +2,7 @@ import os
 import socket
 import sys
 import dns.resolver
+from string import Template
 
 ################################################################################
 # INIT
@@ -18,38 +19,41 @@ STATS_PORT = os.environ.get('STATS_PORT', '1936')
 STATS_AUTH = os.environ.get('STATS_AUTH', 'admin:admin')
 BACKENDS = os.environ.get('BACKENDS', '').split(' ')
 BACKENDS_PORT = os.environ.get('BACKENDS_PORT', '80')
-LOGGING = os.environ.get('LOGGING', '')
+LOGGING = os.environ.get('LOGGING', '127.0.0.1')
+TIMEOUT_CONNECT = os.environ.get('TIMEOUT_CONNECT', '5000')
+TIMEOUT_CLIENT = os.environ.get('TIMEOUT_CLIENT', '50000')
+TIMEOUT_SERVER = os.environ.get('TIMEOUT_SERVER', '50000')
 
-listen_conf = """
+listen_conf = Template("""
   listen stats
-    bind *:%(port)s
+    bind *:$port
     stats enable
     stats uri /
     stats hide-version
-    stats auth %(auth)s
-"""
+    stats auth $auth
+""")
 
-frontend_conf = """
-  frontend %(name)s
-    bind *:%(port)s %(accept_proxy)s
+frontend_conf = Template("""
+  frontend $name
+    bind *:$port $accept_proxy
     mode http
-    default_backend %(backend)s
-"""
+    default_backend $backend
+""")
 
-backend_conf = """
-  backend %(backend)s
+backend_conf = Template("""
+  backend $backend
     mode http
-    balance %(balance)s
+    balance $balance
     option forwardfor
-    http-request set-header X-Forwarded-Port %%[dst_port]
+    http-request set-header X-Forwarded-Port %[dst_port]
     http-request add-header X-Forwarded-Proto https if { ssl_fc }
     option httpchk HEAD / HTTP/1.1\\r\\nHost:localhost
     cookie SRV_ID prefix
-"""
+""")
 
-backend_conf_plus = """
-    server %(name)s-%(index)s %(host)s:%(port)s %(cookies)s check
-"""
+backend_conf_plus = Template("""
+    server $name-$index $host:$port $cookies check
+""")
 
 health_conf = """
 listen default
@@ -61,7 +65,7 @@ if COOKIES_ENABLED:
 else:
     cookies = ""
 
-backend_conf = backend_conf % dict(backend=BACKEND_NAME, balance=BALANCE)
+backend_conf = backend_conf.substitute(backend=BACKEND_NAME, balance=BALANCE)
 
 
 ################################################################################
@@ -78,12 +82,13 @@ if sys.argv[1] == "dns":
             records = dns.resolver.query(host)
         except Exception as err:
             print(err)
-            backend_conf += backend_conf_plus % dict(
+            backend_conf += backend_conf_plus.substitute(
                     name=host.replace(".", "-"),
                     index=index,
                     host=host,
                     port=port,
-                    cookies=cookies)
+                    cookies=cookies
+            )
         else:
             for ip in records:
                 ips[str(ip)] = host
@@ -94,7 +99,7 @@ if sys.argv[1] == "dns":
         )
 
     for ip, host in ips.items():
-        backend_conf += backend_conf_plus % dict(
+        backend_conf += backend_conf_plus.substitute(
             name=host.replace(".", "-"),
             index=ip.replace(".", "-"),
             host=ip,
@@ -110,7 +115,7 @@ elif sys.argv[1] == "env":
         server_port = backend_server.split(':')
         host = server_port[0]
         port = server_port[1] if len(server_port) > 1 else BACKENDS_PORT
-        backend_conf += backend_conf_plus % dict(
+        backend_conf += backend_conf_plus.substitute(
                 name=host.replace(".", "-"),
                 index=index,
                 host=host,
@@ -160,7 +165,7 @@ elif sys.argv[1] == "hosts":
 
         existing_hosts.add(host_ip)
         host_port = BACKENDS_PORT
-        backend_conf += backend_conf_plus % dict(
+        backend_conf += backend_conf_plus.substitute(
                 name='http-server',
                 index=index,
                 host=host_ip,
@@ -176,16 +181,29 @@ else:
 
 with open("/etc/haproxy/haproxy.cfg", "w") as configuration:
     with open("/tmp/haproxy.cfg", "r") as default:
-        conf = default.read()
-        if LOGGING:
-            conf = conf.replace('127.0.0.1', LOGGING)
+        conf = Template(default.read())
+        conf = conf.substitute(
+            LOGGING=LOGGING,
+            TIMEOUT_CLIENT=TIMEOUT_CLIENT,
+            TIMEOUT_CONNECT=TIMEOUT_CONNECT,
+            TIMEOUT_SERVER=TIMEOUT_SERVER
+        )
+
         configuration.write(conf)
-    configuration.write(listen_conf % dict(port=STATS_PORT, auth=STATS_AUTH))
-    configuration.write(frontend_conf % dict(
-        name=FRONTEND_NAME,
-        port=FRONTEND_PORT,
-        backend=BACKEND_NAME,
-        accept_proxy=accept_proxy
-    ))
+
+    configuration.write(
+        listen_conf.substitute(
+            port=STATS_PORT, auth=STATS_AUTH
+        )
+    )
+
+    configuration.write(
+        frontend_conf.substitute(
+            name=FRONTEND_NAME,
+            port=FRONTEND_PORT,
+            backend=BACKEND_NAME,
+            accept_proxy=accept_proxy
+        )
+    )
     configuration.write(backend_conf)
     configuration.write(health_conf)

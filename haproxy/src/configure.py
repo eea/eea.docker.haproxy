@@ -1,8 +1,8 @@
 import os
 import socket
 import sys
-import dns.resolver
 from string import Template
+import subprocess
 
 ################################################################################
 # INIT
@@ -79,7 +79,7 @@ if sys.argv[1] == "dns":
         port = server_port[1] if len(server_port) > 1 else BACKENDS_PORT
 
         try:
-            records = dns.resolver.query(host)
+            records = subprocess.check_output(["getent", "hosts", host])
         except Exception as err:
             print(err)
             backend_conf += backend_conf_plus.substitute(
@@ -90,8 +90,9 @@ if sys.argv[1] == "dns":
                     cookies=cookies
             )
         else:
-            for ip in records:
-                ips[str(ip)] = host
+            for record in records.splitlines():
+                ip = record.split()[0].decode()
+                ips[ip] = host
 
     with open('/etc/haproxy/dns.backends', 'w') as bfile:
         bfile.write(

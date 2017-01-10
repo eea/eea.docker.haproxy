@@ -23,6 +23,7 @@ LOGGING = os.environ.get('LOGGING', '127.0.0.1')
 TIMEOUT_CONNECT = os.environ.get('TIMEOUT_CONNECT', '5000')
 TIMEOUT_CLIENT = os.environ.get('TIMEOUT_CLIENT', '50000')
 TIMEOUT_SERVER = os.environ.get('TIMEOUT_SERVER', '50000')
+HTTPCHK = os.environ.get('HTTPCHK', 'HEAD /')
 
 listen_conf = Template("""
   listen stats
@@ -47,7 +48,7 @@ backend_conf = Template("""
     option forwardfor
     http-request set-header X-Forwarded-Port %[dst_port]
     http-request add-header X-Forwarded-Proto https if { ssl_fc }
-    option httpchk HEAD / HTTP/1.1\\r\\nHost:localhost
+    option httpchk $httpchk HTTP/1.1\\r\\nHost:localhost
     cookie SRV_ID prefix
 """)
 
@@ -65,7 +66,7 @@ if COOKIES_ENABLED:
 else:
     cookies = ""
 
-backend_conf = backend_conf.substitute(backend=BACKEND_NAME, balance=BALANCE)
+backend_conf = backend_conf.substitute(backend=BACKEND_NAME, balance=BALANCE, httpchk=HTTPCHK)
 
 
 ################################################################################

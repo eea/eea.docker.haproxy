@@ -41,7 +41,27 @@ frontend_conf = Template("""
     default_backend $backend
 """)
 
-backend_conf = Template("""
+if COOKIES_ENABLED:
+    #if we choose to enable session stickiness
+    #then insert a cookie named SRV_ID to the request:
+    #all responses from HAProxy to the client will contain a Set-Cookie:
+    #header with a specific value for each backend server as its cookie value.
+    backend_conf = Template("""
+  backend $backend
+    mode http
+    balance $balance
+    option forwardfor
+    http-request set-header X-Forwarded-Port %[dst_port]
+    http-request add-header X-Forwarded-Proto https if { ssl_fc }
+    option httpchk $httpchk HTTP/1.1\\r\\nHost:localhost
+    cookie SRV_ID insert
+""")
+    cookies = "cookie @@value@@"
+else:
+    #the old template and behaviour for backward compatibility
+    #in this case the cookie will not be set - see below the value for
+    #cookies variable (is set to empty)
+    backend_conf = Template("""
   backend $backend
     mode http
     balance $balance
@@ -51,6 +71,7 @@ backend_conf = Template("""
     option httpchk $httpchk HTTP/1.1\\r\\nHost:localhost
     cookie SRV_ID prefix
 """)
+    cookies = ""
 
 backend_conf_plus = Template("""
     server $name-$index $host:$port $cookies check
@@ -60,11 +81,6 @@ health_conf = """
 listen default
   bind *:4242
 """
-
-if COOKIES_ENABLED:
-    cookies = "cookie value"
-else:
-    cookies = ""
 
 backend_conf = backend_conf.substitute(backend=BACKEND_NAME, balance=BALANCE, httpchk=HTTPCHK)
 
@@ -88,7 +104,7 @@ if sys.argv[1] == "dns":
                     index=index,
                     host=host,
                     port=port,
-                    cookies=cookies
+                    cookies=cookies.replace('@@value@@', host)
             )
         else:
             for record in records.splitlines():
@@ -106,7 +122,7 @@ if sys.argv[1] == "dns":
             index=ip.replace(".", "-"),
             host=ip,
             port=port,
-            cookies=cookies)
+            cookies=cookies.replace('@@value@@', ip))
 
 ################################################################################
 # Backends provided via BACKENDS environment variable
@@ -122,7 +138,7 @@ elif sys.argv[1] == "env":
                 index=index,
                 host=host,
                 port=port,
-                cookies=cookies)
+                cookies=cookies.replace('@@value@@', host))
 
 ################################################################################
 # Look for backend within /etc/hosts
@@ -172,7 +188,7 @@ elif sys.argv[1] == "hosts":
                 index=index,
                 host=host_ip,
                 port=host_port,
-                cookies=cookies
+                cookies=cookies.replace('@@value@@', host_ip)
         )
         index += 1
 

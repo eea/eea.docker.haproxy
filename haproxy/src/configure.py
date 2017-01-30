@@ -49,7 +49,7 @@ backend_conf = Template("""
     http-request set-header X-Forwarded-Port %[dst_port]
     http-request add-header X-Forwarded-Proto https if { ssl_fc }
     option httpchk $httpchk HTTP/1.1\\r\\nHost:localhost
-    cookie SRV_ID prefix
+    cookie SRV_ID insert
 """)
 
 backend_conf_plus = Template("""
@@ -62,7 +62,7 @@ listen default
 """
 
 if COOKIES_ENABLED:
-    cookies = "cookie value"
+    cookies = "cookie @@value@@"
 else:
     cookies = ""
 
@@ -88,7 +88,7 @@ if sys.argv[1] == "dns":
                     index=index,
                     host=host,
                     port=port,
-                    cookies=cookies
+                    cookies=cookies.replace('@@value@@', host)
             )
         else:
             for record in records.splitlines():
@@ -106,7 +106,7 @@ if sys.argv[1] == "dns":
             index=ip.replace(".", "-"),
             host=ip,
             port=port,
-            cookies=cookies)
+            cookies=cookies.replace('@@value@@', ip))
 
 ################################################################################
 # Backends provided via BACKENDS environment variable
@@ -122,7 +122,7 @@ elif sys.argv[1] == "env":
                 index=index,
                 host=host,
                 port=port,
-                cookies=cookies)
+                cookies=cookies.replace('@@value@@', host))
 
 ################################################################################
 # Look for backend within /etc/hosts
@@ -172,7 +172,7 @@ elif sys.argv[1] == "hosts":
                 index=index,
                 host=host_ip,
                 port=host_port,
-                cookies=cookies
+                cookies=cookies.replace('@@value@@', host_ip)
         )
         index += 1
 

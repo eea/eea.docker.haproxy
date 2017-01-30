@@ -1,5 +1,9 @@
 # Changelog
 
+## 2017-01-30
+
+- Fixed session stickiness [chiridra refs #81199]
+
 ## 2017-01-03
 
 - Fix DNS lookup to work with latest Rancher version (1.2.0+)

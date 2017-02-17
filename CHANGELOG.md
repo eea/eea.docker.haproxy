@@ -1,5 +1,9 @@
 # Changelog
 
+## 2017-02-17
+
+- surround cookie with quotas [chiridra refs #82353]
+
 ## 2017-01-30
 
 - Fixed session stickiness [chiridra refs #81199]

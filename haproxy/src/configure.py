@@ -56,7 +56,7 @@ if COOKIES_ENABLED:
     option httpchk $httpchk HTTP/1.1\\r\\nHost:localhost
     cookie SRV_ID insert
 """)
-    cookies = "cookie @@value@@"
+    cookies = "cookie \\\"@@value@@\\\""
 else:
     #the old template and behaviour for backward compatibility
     #in this case the cookie will not be set - see below the value for

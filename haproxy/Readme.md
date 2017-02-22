@@ -1,6 +1,6 @@
 ## HAProxy Docker image
 
- - HAProxy 1.6.3
+ - HAProxy 1.6.11
 
 This image is generic, thus you can obviously re-use it within
 your non-related EEA projects.
@@ -13,8 +13,7 @@ instead of **80**. Please update your deployment accordingly.
 ### Supported tags and respective Dockerfile links
 
   - `:latest` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/blob/master/haproxy/Dockerfile) (default)
-  - `:1.6` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/blob/1.6/haproxy/Dockerfile)
-  - `:1.5` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/blob/1.5/haproxy/Dockerfile)
+  - `:1.6-1.3` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/tree/1.6-1.3/haproxy/Dockerfile)
 
 ### Changes
 

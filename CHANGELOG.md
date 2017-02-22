@@ -1,5 +1,11 @@
 # Changelog
 
+## 2017-02-22
+
+- Fix HAProxy version inside 1.6 tag
+
+- Release HAProxy 1.7
+
 ## 2017-02-17
 
 - surround cookie with quotas [chiridra refs #82353]

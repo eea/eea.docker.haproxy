@@ -13,6 +13,7 @@ instead of **80**. Please update your deployment accordingly.
 ### Supported tags and respective Dockerfile links
 
   - `:latest` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/blob/master/haproxy/Dockerfile) (default)
+  - `:1.7-1.0` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/tree/1.7-1.0/haproxy/Dockerfile)
   - `:1.6-1.3` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/tree/1.6-1.3/haproxy/Dockerfile)
 
 ### Changes

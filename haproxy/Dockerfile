@@ -1,4 +1,4 @@
-FROM haproxy:1.6
+FROM haproxy:1.7
 MAINTAINER "Alin Voinea" <alin.voinea@eaudeweb.ro>
 
 RUN apt-get update && \

@@ -1,5 +1,17 @@
 # Changelog
 
+## 2017-02-17
+
+- surround cookie with quotas [chiridra refs #82353]
+
+## 2017-01-30
+
+- Fixed session stickiness [chiridra refs #81199]
+
+## 2017-01-03
+
+- Fix DNS lookup to work with latest Rancher version (1.2.0+)
+
 ## 2016-04-18
 
 - Support for named backends resolved by an internal/external DNS service (e.g. when deployed using rancher-compose)

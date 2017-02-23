@@ -1,20 +1,20 @@
 ## HAProxy Docker image
 
- - HAProxy 1.6.11
-
 This image is generic, thus you can obviously re-use it within
 your non-related EEA projects.
 
-### Warning
-
-For security reasons, latest builds of this image run HAProxy on default port **5000**
-instead of **80**. Please update your deployment accordingly.
+ - Debian: **Jessie**
+ - HAProxy: **1.7**
+ - Expose: **5000**
 
 ### Supported tags and respective Dockerfile links
 
-  - `:latest` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/blob/master/haproxy/Dockerfile) (default)
-  - `:1.7-1.0` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/tree/1.7-1.0/haproxy/Dockerfile)
-  - `:1.6-1.3` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/tree/1.6-1.3/haproxy/Dockerfile)
+  - `:latest` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/blob/master/haproxy/Dockerfile) - Debian: **Jessie**, HAProxy: **1.7**
+
+### Stable and immutable tags
+
+  - `:1.7-1.0` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/tree/1.7-1.0/haproxy/Dockerfile) - HAProxy: **1.7** Release: **1.0**
+  - `:1.6-1.3` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/tree/1.6-1.3/haproxy/Dockerfile) - HAProxy: **1.6** Release: **1.3**
 
 ### Changes
 
@@ -22,7 +22,7 @@ instead of **80**. Please update your deployment accordingly.
 
 ### Base docker image
 
- - [hub.docker.com](https://registry.hub.docker.com/u/eeacms/haproxy)
+ - [hub.docker.com](https://hub.docker.com/r/eeacms/haproxy)
 
 
 ### Source code
@@ -32,7 +32,7 @@ instead of **80**. Please update your deployment accordingly.
 
 ### Installation
 
-1. Install [Docker](https://www.docker.com/) **Please note**: version must not be 1.8.x due to docker issue [#16619](https://github.com/docker/docker/issues/16619)
+1. Install [Docker](https://www.docker.com/)
 2. Install [Docker Compose](https://docs.docker.com/compose/install/).
 
 ## Usage
@@ -42,16 +42,21 @@ instead of **80**. Please update your deployment accordingly.
 
 Here is a basic example of a `docker-compose.yml` file using the `eeacms/haproxy` docker image:
 
-    haproxy:
-      image: eeacms/haproxy
-      links:
-      - webapp
-      ports:
-      - "80:80"
-      - "1936:1936"
+    version: "2"
+    services:
+      haproxy:
+        image: eeacms/haproxy
+        depends_on:
+        - webapp
+        ports:
+        - "80:5000"
+        - "1936:1936"
+        environment:
+          BACKENDS: "webapp"
+          DNS_ENABLED: "true"
 
-    webapp:
-      image: eeacms/hello
+      webapp:
+        image: eeacms/hello
 
 
 The application can be scaled to use more server instances, with `docker-compose scale`:
@@ -75,27 +80,12 @@ The servers are written as `server_ip:server_listening_port`,
 separated by spaces (and enclosed in quotes, to avoid issues).
 The contents of the variable are evaluated in a python script that writes
 the HAProxy configuration file automatically.
-By default, the `BACKENDS` variable is not set.
 
 If there are multiple DNS records for one or more of your `BACKENDS` (e.g. when deployed using rancher-compose),
 you can use `DNS_ENABLED` environment variable. This way, haproxy will load-balance
 all of your backends instead of only the first entry found:
 
   $ docker run --link=webapp -e BACKENDS="webapp" -e DNS_ENABLED=true eeacms/haproxy
-
-It will also automatically add/remove backends when you scale them.
-
-### Link this container to one or more application containers
-
-    $ docker run --link app_instance_1 --link app_instance_2 eeacms/haproxy:latest
-
-When linking containers with the `--link` flag, entries in `/etc/hosts`
-are automatically added by `docker`. This image is configured so in absence
-of a `haproxy.cfg` file and when the `BACKENDS` variable is not set it will
-automatically parse `/etc/hosts` and create and load the configuration for `haproxy`.
-In this scenario, the file `/etc/hosts` will be monitored and every time it is
-modified (for example when restarting a linked container) configuration for
-`haproxy` will be automatically recreated and reloaded.
 
 
 ### Use a custom configuration file mounted as a volume
@@ -123,38 +113,6 @@ Additionally, you can supply your own static `haproxy.cfg` file by extending the
 and then run
 
     $ docker build -t your-image-name:your-image-tag path/to/Dockerfile
-
-### Run with Docker Compose and multiple web apps
-
-If you have multiple apps running on port 80 HAProxy will by default proxy them all. If you want
-to restrict it to just one app then specify the `SERVICE_NAMES` environment variable.
-
-    haproxy:
-      image: eeacms/haproxy
-      links:
-      - webapp
-      ports:
-      - "80:80"
-      - "1936:1936"
-      environment:
-      - SERVICE_NAMES=webapp
-
-    first_webapp:
-      image: eeacms/hello
-
-    second_webapp:
-      image: eeacms/hello
-
-    third_app:
-      image: eeacms/hello
-
-Note that haproxy will not serve requests from `third_app` because of the `SERVICE_NAMES` variable.
-You could also say: `SERVICE_NAMES=first_webapp second_webapp`
-
-### Upgrade
-
-    $ docker pull eeacms/haproxy:latest
-
 
 ## Supported environment variables ##
 
@@ -188,7 +146,7 @@ either when running the container or in a `docker-compose.yml` file.
 By default there are no logs from haproxy because they are sent on UDP port 514 inside container.
 You can override this behaviour by providing the `LOGGING` environment variable:
 
-    docker run -e LOGGING=logs.example.com:5005 -e BACKENDS=www1 www2 www3 eeacms/haproxy
+    docker run -e LOGGING=logs.example.com:5005 ... eeacms/haproxy
 
 Now make sure that `logs.example.com` listen on UDP port `5005`
 

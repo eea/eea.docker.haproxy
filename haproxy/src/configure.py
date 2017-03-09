@@ -24,6 +24,12 @@ TIMEOUT_CONNECT = os.environ.get('TIMEOUT_CONNECT', '5000')
 TIMEOUT_CLIENT = os.environ.get('TIMEOUT_CLIENT', '50000')
 TIMEOUT_SERVER = os.environ.get('TIMEOUT_SERVER', '50000')
 HTTPCHK = os.environ.get('HTTPCHK', 'HEAD /')
+INTER = os.environ.get('INTER', '2s')
+FAST_INTER = os.environ.get('FAST_INTER', INTER)
+DOWN_INTER = os.environ.get('DOWN_INTER', INTER)
+RISE = os.environ.get('RISE', '2')
+FALL = os.environ.get('FALL', '3')
+
 
 listen_conf = Template("""
   listen stats
@@ -54,6 +60,7 @@ if COOKIES_ENABLED:
     http-request set-header X-Forwarded-Port %[dst_port]
     http-request add-header X-Forwarded-Proto https if { ssl_fc }
     option httpchk $httpchk HTTP/1.1\\r\\nHost:localhost
+    default-server inter $inter fastinter $fastinter downinter $downinter fall $fall rise $rise
     cookie SRV_ID insert
 """)
     cookies = "cookie \\\"@@value@@\\\""
@@ -69,6 +76,7 @@ else:
     http-request set-header X-Forwarded-Port %[dst_port]
     http-request add-header X-Forwarded-Proto https if { ssl_fc }
     option httpchk $httpchk HTTP/1.1\\r\\nHost:localhost
+    default-server inter $inter fastinter $fastinter downinter $downinter fall $fall rise $rise
     cookie SRV_ID prefix
 """)
     cookies = ""
@@ -82,7 +90,16 @@ listen default
   bind *:4242
 """
 
-backend_conf = backend_conf.substitute(backend=BACKEND_NAME, balance=BALANCE, httpchk=HTTPCHK)
+backend_conf = backend_conf.substitute(
+    backend=BACKEND_NAME,
+    balance=BALANCE,
+    httpchk=HTTPCHK,
+    inter=INTER,
+    fastinter=FAST_INTER,
+    downinter=DOWN_INTER,
+    fall=FALL,
+    rise=RISE
+)
 
 
 ################################################################################

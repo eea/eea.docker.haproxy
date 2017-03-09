@@ -13,8 +13,11 @@ your non-related EEA projects.
 
 ### Stable and immutable tags
 
-  - `:1.7-1.0` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/tree/1.7-1.0/haproxy/Dockerfile) - HAProxy: **1.7** Release: **1.0**
+  - `:1.7-2.0` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/tree/1.7-2.0/haproxy/Dockerfile) - HAProxy: **1.7** Release: **2.0**
   - `:1.6-1.3` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/tree/1.6-1.3/haproxy/Dockerfile) - HAProxy: **1.6** Release: **1.3**
+
+See [older versions](https://github.com/eea/eea.docker.haproxy/releases)
+
 
 ### Changes
 
@@ -61,14 +64,17 @@ Here is a basic example of a `docker-compose.yml` file using the `eeacms/haproxy
 
 The application can be scaled to use more server instances, with `docker-compose scale`:
 
-    $ docker-compose scale webapp=4
     $ docker-compose up -d
+    $ docker-compose scale webapp=4
 
 The results can be checked in a browser, navigating to http://localhost.
 By refresing the page multiple times it is noticeable that the IP of the server
 that served the page changes, as HAProxy switches between them.
 The stats page can be accessed at http://localhost:1936 where you have to log in
 using the `STATS_AUTH` authentication details (default `admin:admin`).
+
+Note that it may take **up to one minute** until backends are plugged-in due to the
+minimum possible `DNS_TTL`.
 
 
 ### Run with backends specified as environment variable
@@ -92,9 +98,8 @@ all of your backends instead of only the first entry found:
 
     $ docker run -v conf.d/haproxy.cfg:/etc/haproxy/haproxy.cfg eeacms/haproxy:latest
 
-This is the preferred way to start a container because the configuration
-file can be modified locally at any time. In order for the modifications to be
-applied, the configuration has to be reloaded, which can be done by running:
+
+If you edit `haproxy.cfg` you can reload it without having to restart the container:
 
     $ docker exec <name-of-your-container> reload
 
@@ -106,9 +111,7 @@ Additionally, you can supply your own static `haproxy.cfg` file by extending the
     FROM eeacms/haproxy:latest
     COPY conf.d/haproxy.cfg /etc/haproxy/haproxy.cfg
 
-    USER root
     RUN apt-get install...
-    USER haproxy
 
 and then run
 
@@ -118,6 +121,7 @@ and then run
 
 As HAProxy has close to no purpose by itself, this image should be used in
 combination with others (for example with [Docker Compose](https://docs.docker.com/compose/)).
+
 HAProxy can be configured by modifying the following env variables,
 either when running the container or in a `docker-compose.yml` file.
 
@@ -133,12 +137,17 @@ either when running the container or in a `docker-compose.yml` file.
   * `BALANCE` The algorithm used for load-balancing - default `roundrobin`
   * `SERVICE_NAMES` An optional prefix for services to be included when discovering services separated by space. - by default it is not set
   * `LOGGING` Override logging ip address:port - default is udp `127.0.0.1:514` inside container
-  * `DNS_ENABLED` DNS lookup provided `BACKENDS`. Use this option when your backends are resolved by an internal/external DNS service (e.g. Rancher)
-  * `DNS_TTL` DNS lookup backends every $DNS_TTL minutes. Default 1 minute.
+  * `DNS_ENABLED` DNS lookup provided `BACKENDS`. Use this option when your backends are resolved by an internal/external DNS service (e.g. **Docker 1.11+**, **Rancher**)
+  * `DNS_TTL` DNS lookup backends every `DNS_TTL` minutes. Default `1` minute.
   * `TIMEOUT_CONNECT` the maximum time to wait for a connection attempt to a VPS to succeed. Default `5000` ms
   * `TIMEOUT_CLIENT` timeouts apply when the client is expected to acknowledge or send data during the TCP process. Default `50000` ms
   * `TIMEOUT_SERVER` timeouts apply when the server is expected to acknowledge or send data during the TCP process. Default `50000` ms
   * `HTTPCHK` The HTTP method and uri used to check on the servers health - default `HEAD /`
+  * `INTER` parameter sets the interval between two consecutive health checks. If not specified, the default value is `2s`
+  * `FAST_INTER` parameter sets the interval between two consecutive health checks when the server is any of the transition state (read above): UP - transitionally DOWN or DOWN - transitionally UP. If not set, then `INTER` is used.
+  * `DOWN_INTER` parameter sets the interval between two consecutive health checks when the server is in the DOWN state. If not set, then `INTER` is used.
+  * `RISE` number of consecutive valid health checks before considering the server as UP. Default value is `2`
+  * `FALL` number of consecutive invalid health checks before considering the server as DOWN. Default value is `3`
 
 
 ## Logging

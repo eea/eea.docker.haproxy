@@ -1,16 +1,21 @@
-haproxy:
-  image: eeacms/haproxy
-  links:
-  - webapp
-  ports:
-  - "80:5000"
-  - "1936:1936"
-  environment:
-  - SERVICE_NAMES=webapp
-  - BACKENDS_PORT=8080
-#  - LOGGING=10.0.0.22
-
-webapp:
-  image: eeacms/hello
-  environment:
-  - PORT=8080
+version: "2"
+services:
+  haproxy:
+    image: eeacms/haproxy
+    depends_on:
+    - webapp
+    ports:
+    - "80:8080"
+    - "1936:1936"
+    environment:
+      FRONTEND_PORT: "8080"
+      BACKENDS: "webapp"
+      BACKENDS_PORT: "8080"
+      DNS_ENABLED: "True"
+      HTTPCHK: "GET /"
+      INTER: "5s"
+#      LOGGING: "logs.example.com:5005"
+  webapp:
+    image: eeacms/hello
+    environment:
+      PORT: "8080"

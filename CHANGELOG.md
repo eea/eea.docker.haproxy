@@ -1,5 +1,9 @@
 # Changelog
 
+## 2017-03-09
+
+- Add possibility to customize backend health check via environment variables
+
 ## 2017-02-22
 
 - Fix HAProxy version inside 1.6 tag

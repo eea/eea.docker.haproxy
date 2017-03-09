@@ -26,7 +26,5 @@ COPY src/reload.sh              /usr/bin/reload
 COPY src/track_hosts.sh         /track_hosts
 COPY src/track_dns.sh           /track_dns
 
-USER haproxy
-
 ENTRYPOINT ["/usr/local/bin/chaperone"]
 CMD ["--user", "haproxy"]

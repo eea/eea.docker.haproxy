@@ -1,5 +1,13 @@
 # Changelog
 
+## 2017-03-22
+
+- Fix /track_dns cron when no backend is up
+
+- Refactor /track_hosts: use chaperone cron instead of inotify
+
+- Remove unnecessary image layers
+
 ## 2017-03-09
 
 - Add possibility to customize backend health check via environment variables

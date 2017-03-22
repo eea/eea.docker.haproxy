@@ -7,8 +7,8 @@ fi
 
 if [ ! -z "$DNS_ENABLED" ]; then
   # Backends are resolved using internal or external DNS service
-  python3 /configure.py dns
   touch /etc/haproxy/dns.backends
+  python3 /configure.py dns
   exit $?
 fi
 
@@ -17,6 +17,6 @@ if [ ! -z "$BACKENDS" ]; then
   python3 /configure.py env
 else
   # Find backend within /etc/hosts
-  python3 /configure.py hosts
   touch /etc/haproxy/hosts.backends
+  python3 /configure.py hosts
 fi

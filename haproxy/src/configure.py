@@ -116,22 +116,13 @@ if sys.argv[1] == "dns":
             records = subprocess.check_output(["getent", "hosts", host])
         except Exception as err:
             print(err)
-            backend_conf += backend_conf_plus.substitute(
-                    name=host.replace(".", "-"),
-                    index=index,
-                    host=host,
-                    port=port,
-                    cookies=cookies.replace('@@value@@', host)
-            )
         else:
             for record in records.splitlines():
                 ip = record.split()[0].decode()
                 ips[ip] = host
 
     with open('/etc/haproxy/dns.backends', 'w') as bfile:
-        bfile.write(
-            ' '.join(sorted(ips))
-        )
+        bfile.write(' '.join(sorted(ips)))
 
     for ip, host in ips.items():
         backend_conf += backend_conf_plus.substitute(
@@ -209,6 +200,9 @@ elif sys.argv[1] == "hosts":
         )
         index += 1
 
+    with open('/etc/haproxy/hosts.backends', 'w') as bfile:
+        bfile.write(' '.join(sorted(existing_hosts)))
+
 if PROXY_PROTOCOL_ENABLED:
     accept_proxy = "accept-proxy"
 else:
@@ -240,5 +234,6 @@ with open("/etc/haproxy/haproxy.cfg", "w") as configuration:
             accept_proxy=accept_proxy
         )
     )
+
     configuration.write(backend_conf)
     configuration.write(health_conf)

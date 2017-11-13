@@ -29,7 +29,7 @@ See [older versions](https://github.com/eea/eea.docker.haproxy/releases)
 
 ### Source code
 
-  - [github.com](http://github.com/eea/eea.docker.haproxy)
+  - [github.com](http://github.com/buluma/buluma.docker.haproxy)
 
 
 ### Installation

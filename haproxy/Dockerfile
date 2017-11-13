@@ -1,5 +1,5 @@
 FROM haproxy:1.7
-MAINTAINER "Alin Voinea" <alin.voinea@eaudeweb.ro>
+MAINTAINER "Shadow Walker" <ops@buluma.me.ke>
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \

@@ -9,18 +9,18 @@ your non-related EEA projects.
 
 ### Supported tags and respective Dockerfile links
 
-  - `:latest` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/blob/master/haproxy/Dockerfile) - Debian: **Jessie**, HAProxy: **1.7**
+  - `:latest` [*Dockerfile*](https://github.com/buluma/buluma.docker.haproxy/blob/master/haproxy/Dockerfile) - Debian: **Jessie**, HAProxy: **1.7**
 
 ### Stable and immutable tags
 
-  - `:1.7-3.0` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/tree/1.7-3.0/haproxy/Dockerfile) - HAProxy: **1.7** Release: **3.0**
+  - `:1.7-3.0` [*Dockerfile*](https://github.com/buluma/buluma.docker.haproxy/tree/1.7-3.0/haproxy/Dockerfile) - HAProxy: **1.7** Release: **3.0**
 
-See [older versions](https://github.com/eea/eea.docker.haproxy/releases)
+See [older versions](https://github.com/buluma/buluma.docker.haproxy/releases)
 
 
 ### Changes
 
- - [CHANGELOG.md](https://github.com/eea/eea.docker.haproxy/blob/master/CHANGELOG.md)
+ - [CHANGELOG.md](https://github.com/buluma/buluma.docker.haproxy/blob/master/CHANGELOG.md)
 
 ### Base docker image
 

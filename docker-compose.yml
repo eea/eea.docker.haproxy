@@ -1,7 +1,7 @@
 version: "2"
 services:
   haproxy:
-    image: haproxy 
+    image: eeacms/haproxy
     depends_on:
     - webapp
     ports:
@@ -14,7 +14,7 @@ services:
       DNS_ENABLED: "True"
       HTTPCHK: "GET /"
       INTER: "5s"
-      DNS_TTL: 1
+#      LOGGING: "logs.example.com:5005"
   webapp:
     image: eeacms/hello
     environment:

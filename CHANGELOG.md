@@ -1,5 +1,10 @@
 # Changelog
 
+
+## 2017-11-20
+
+- Remove chaperone in favour of cron
+
 ## 2017-03-22
 
 - Fix /track_dns cron when no backend is up

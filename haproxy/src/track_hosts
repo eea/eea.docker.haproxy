@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [ -f /etc/environment ]; then
+     . /etc/environment
+fi
+
 IPS_1=`cat /etc/haproxy/hosts.backends`
 python3 /configure.py hosts
 IPS_2=`cat /etc/haproxy/hosts.backends`

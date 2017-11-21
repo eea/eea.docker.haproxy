@@ -11,7 +11,7 @@ if [ ! -z "$DNS_ENABLED" ]; then
   # Backends are resolved using internal or external DNS service
   touch /etc/haproxy/dns.backends
   python3 /configure.py dns
-  echo "*/${DNS_TTL:-1} * * * * /track_dns  >/proc/1/fd/1 2>/proc/1/fd/2" > /var/crontab.txt
+  echo "*/${DNS_TTL:-1} * * * * /track_dns  | logger " > /var/crontab.txt
 
 else
 
@@ -24,7 +24,7 @@ else
     python3 /configure.py hosts
   fi
 
-  echo "*/${DNS_TTL:-1} * * * * /track_hosts  >/proc/1/fd/1 2>/proc/1/fd/2" > /var/crontab.txt
+  echo "*/${DNS_TTL:-1} * * * * /track_hosts  | logger " > /var/crontab.txt
 
 fi
 

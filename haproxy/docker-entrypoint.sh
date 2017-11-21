@@ -63,5 +63,9 @@ echo "export TIMEOUT_CLIENT=$TIMEOUT_CLIENT"  >> /etc/environment
 echo "export TIMEOUT_CONNECT=$TIMEOUT_CONNECT"  >> /etc/environment
 echo "export TIMEOUT_SERVER=$TIMEOUT_SERVER"  >> /etc/environment
 
-gosu haproxy $(which haproxy-systemd-wrapper) -p /etc/haproxy/haproxy.pid  -f /etc/haproxy/haproxy.cfg
+
+
+setfacl -R -m u:haproxy:rwx /run 
+
+exec gosu haproxy /haproxy-entrypoint.sh "$@" 
 

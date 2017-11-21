@@ -11,7 +11,7 @@ fi
 
 
 if [ -f /etc/environment ]; then
-     . /etc/environment
+     source /etc/environment
 fi
 
 IPS_1=`cat /etc/haproxy/hosts.backends`

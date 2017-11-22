@@ -1,9 +1,11 @@
 # Changelog
 
 
-## 2017-11-20
+## 2017-11-22 (1.7-4.0
 
 - Remove chaperone in favour of cron
+
+- Release 4.0
 
 ## 2017-03-22
 

@@ -1,3 +1,0 @@
-#!/bin/bash
-
-haproxy -f /etc/haproxy/haproxy.cfg -p /etc/haproxy/haproxy.pid -st $(</etc/haproxy/haproxy.pid)

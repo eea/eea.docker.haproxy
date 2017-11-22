@@ -63,7 +63,6 @@ if [ ! -z $TIMEOUT_CLIENT ]; then echo "export TIMEOUT_CLIENT=$TIMEOUT_CLIENT"  
 if [ ! -z $TIMEOUT_CONNECT ]; then echo "export TIMEOUT_CONNECT=$TIMEOUT_CONNECT"  >> /etc/environment; fi
 if [ ! -z $TIMEOUT_SERVER ]; then echo "export TIMEOUT_SERVER=$TIMEOUT_SERVER"  >> /etc/environment; fi
 
-setfacl -R -m u:haproxy:rwx /run 
 
-exec gosu haproxy /haproxy-entrypoint.sh "$@" 
+exec /haproxy-entrypoint.sh "$@" 
 

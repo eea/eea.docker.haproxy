@@ -20,6 +20,7 @@ STATS_AUTH = os.environ.get('STATS_AUTH', 'admin:admin')
 BACKENDS = os.environ.get('BACKENDS', '').split(' ')
 BACKENDS_PORT = os.environ.get('BACKENDS_PORT', '80')
 LOGGING = os.environ.get('LOGGING', '127.0.0.1')
+LOG_LEVEL = os.environ.get('LOG_LEVEL', 'notice')
 TIMEOUT_CONNECT = os.environ.get('TIMEOUT_CONNECT', '5000')
 TIMEOUT_CLIENT = os.environ.get('TIMEOUT_CLIENT', '50000')
 TIMEOUT_SERVER = os.environ.get('TIMEOUT_SERVER', '50000')
@@ -213,6 +214,7 @@ with open("/etc/haproxy/haproxy.cfg", "w") as configuration:
         conf = Template(default.read())
         conf = conf.substitute(
             LOGGING=LOGGING,
+            LOG_LEVEL=LOG_LEVEL,
             TIMEOUT_CLIENT=TIMEOUT_CLIENT,
             TIMEOUT_CONNECT=TIMEOUT_CONNECT,
             TIMEOUT_SERVER=TIMEOUT_SERVER

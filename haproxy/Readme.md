@@ -136,6 +136,7 @@ either when running the container or in a `docker-compose.yml` file.
   * `BALANCE` The algorithm used for load-balancing - default `roundrobin`
   * `SERVICE_NAMES` An optional prefix for services to be included when discovering services separated by space. - by default it is not set
   * `LOGGING` Override logging ip address:port - default is udp `127.0.0.1:514` inside container
+  * `LOG_LEVEL` Set haproxy log level, default is `notice` ( only send important events ). Can be: `emerg`,`alert`,`crit`,`err`,`warning`,`notice`,`info`,`debug`
   * `DNS_ENABLED` DNS lookup provided `BACKENDS`. Use this option when your backends are resolved by an internal/external DNS service (e.g. **Docker 1.11+**, **Rancher**)
   * `DNS_TTL` DNS lookup backends every `DNS_TTL` minutes. Default `1` minute.
   * `TIMEOUT_CONNECT` the maximum time to wait for a connection attempt to a VPS to succeed. Default `5000` ms
@@ -151,8 +152,13 @@ either when running the container or in a `docker-compose.yml` file.
 
 ## Logging
 
-By default there are no logs from haproxy because they are sent on UDP port 514 inside container.
-You can override this behaviour by providing the `LOGGING` environment variable:
+By default the logs from haproxy are present in the docker log, by using the rsyslog inside the container (UDP port 514). No access logs are present by default, but this can be changed by setting the log level.
+
+You can change the logging level by providing the `LOG_LEVEL` environment variable:
+
+ docker run -e LOG_LEVEL=info  ... eeacms/haproxy
+
+You can override the log output by providing the `LOGGING` environment variable:
 
     docker run -e LOGGING=logs.example.com:5005 ... eeacms/haproxy
 

@@ -21,9 +21,7 @@ RUN apt-get update \
 
 
 
-COPY src/reload                 /usr/bin/
 COPY src/haproxy.cfg            /tmp/
 COPY docker-entrypoint.sh src/configure.py src/track_hosts src/track_dns /
-
 
 

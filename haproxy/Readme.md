@@ -56,6 +56,7 @@ Here is a basic example of a `docker-compose.yml` file using the `eeacms/haproxy
         environment:
           BACKENDS: "webapp"
           DNS_ENABLED: "true"
+          LOG_LEVEL: "info"
 
       webapp:
         image: eeacms/hello

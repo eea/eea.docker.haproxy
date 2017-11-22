@@ -156,7 +156,7 @@ By default the logs from haproxy are present in the docker log, by using the rsy
 
 You can change the logging level by providing the `LOG_LEVEL` environment variable:
 
- docker run -e LOG_LEVEL=info  ... eeacms/haproxy
+    docker run -e LOG_LEVEL=info  ... eeacms/haproxy
 
 You can override the log output by providing the `LOGGING` environment variable:
 

@@ -31,8 +31,8 @@ fi
 #enable cron logging
 service rsyslog restart
 
-#add crontab 
-crontab /var/crontab.txt 
+#add crontab
+crontab /var/crontab.txt
 chmod 600 /etc/crontab
 service cron restart
 
@@ -41,6 +41,7 @@ service cron restart
 echo "export PATH=$PATH"':$PATH' >> /etc/environment
 if [ ! -z "$BACKENDS" ]; then echo "export BACKENDS=\"$BACKENDS\""  >> /etc/environment; fi
 if [ ! -z "$BACKENDS_PORT" ]; then echo "export BACKENDS_PORT=\"$BACKENDS_PORT\""  >> /etc/environment; fi
+if [ ! -z "$BACKENDS_MODE" ]; then echo "export BACKENDS_MODE=\"$BACKENDS_MODE\""  >> /etc/environment; fi
 if [ ! -z "$BACKEND_NAME" ]; then echo "export BACKEND_NAME=\"$BACKEND_NAME\""  >> /etc/environment; fi
 if [ ! -z "$BALANCE" ]; then echo "export BALANCE=\"$BALANCE\""  >> /etc/environment; fi
 if [ ! -z "$COOKIES_ENABLED" ]; then echo "export COOKIES_ENABLED=\"$COOKIES_ENABLED\""  >> /etc/environment; fi
@@ -49,6 +50,7 @@ if [ ! -z "$FALL" ]; then echo "export FALL=\"$FALL\""  >> /etc/environment; fi
 if [ ! -z "$FAST_INTER" ]; then echo "export FAST_INTER=\"$FAST_INTER\""  >> /etc/environment; fi
 if [ ! -z "$FRONTEND_NAME" ]; then echo "export FRONTEND_NAME=\"$FRONTEND_NAME\""  >> /etc/environment; fi
 if [ ! -z "$FRONTEND_PORT" ]; then echo "export FRONTEND_PORT=\"$FRONTEND_PORT\""  >> /etc/environment; fi
+if [ ! -z "$FRONTEND_MODE" ]; then echo "export FRONTEND_MODE=\"$FRONTEND_MODE\""  >> /etc/environment; fi
 if [ ! -z "$HTTPCHK" ]; then echo "export HTTPCHK=\"$HTTPCHK\""  >> /etc/environment; fi
 if [ ! -z "$INTER" ]; then echo "export INTER=\"$INTER\""  >> /etc/environment; fi
 if [ ! -z "$LOGGING" ]; then echo "export LOGGING=\"$LOGGING\""  >> /etc/environment; fi

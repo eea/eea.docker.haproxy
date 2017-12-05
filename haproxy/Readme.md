@@ -129,11 +129,13 @@ either when running the container or in a `docker-compose.yml` file.
   * `STATS_AUTH` The authentication details (written as `user:password` for the statistics page - default `admin:admin`
   * `FRONTEND_NAME` The label of the frontend - default `http-frontend`
   * `FRONTEND_PORT` The port to bind the frontend to - default `5000`
+  * `FRONTEND_MODE` Frontend mode - default `http`
   * `PROXY_PROTOCOL_ENABLED` The option to enable or disable accepting proxy protocol (`true` stands for enabled, `false` or anything else for disabled) - default `false`
   * `COOKIES_ENABLED` The option to enable or disable cookie-based sessions (`true` stands for enabled, `false` or anything else for disabled) - default `false`
   * `BACKEND_NAME` The label of the backend - default `http-backend`
   * `BACKENDS` The list of `server_ip:server_listening_port` to be load-balanced by HAProxy, separated by space - by default it is not set
   * `BACKENDS_PORT` Port to use when auto-discovering backends, or when `BACKENDS` are specified without port - by default `80`
+  * `BACKENDS_MODE` Backends mode - default `http`
   * `BALANCE` The algorithm used for load-balancing - default `roundrobin`
   * `SERVICE_NAMES` An optional prefix for services to be included when discovering services separated by space. - by default it is not set
   * `LOGGING` Override logging ip address:port - default is udp `127.0.0.1:514` inside container

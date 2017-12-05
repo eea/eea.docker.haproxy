@@ -4,6 +4,8 @@
 
 - Upgrade to haproxy 1.8
 
+- Possibility to change frontend/backend `mode` to `TCP` via environment variables `FRONTEND_MODE` and `BACKENDS_MODE` [refs #10]
+
 ## 2017-11-30 (1.7-4.1)
 
 - bugfix add LOG_LEVEL to /etc/environment as well

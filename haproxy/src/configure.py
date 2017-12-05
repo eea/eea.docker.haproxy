@@ -10,6 +10,7 @@ import subprocess
 
 FRONTEND_NAME = os.environ.get('FRONTEND_NAME', 'http-frontend')
 FRONTEND_PORT = os.environ.get('FRONTEND_PORT', '5000')
+FRONTEND_MODE = os.environ.get('FRONTEND_MODE', 'http')
 BACKEND_NAME = os.environ.get('BACKEND_NAME', 'http-backend')
 BALANCE = os.environ.get('BALANCE', 'roundrobin')
 SERVICE_NAMES = os.environ.get('SERVICE_NAMES', '')
@@ -19,6 +20,7 @@ STATS_PORT = os.environ.get('STATS_PORT', '1936')
 STATS_AUTH = os.environ.get('STATS_AUTH', 'admin:admin')
 BACKENDS = os.environ.get('BACKENDS', '').split(' ')
 BACKENDS_PORT = os.environ.get('BACKENDS_PORT', '80')
+BACKENDS_MODE = os.environ.get('BACKEND_MODE', 'http')
 LOGGING = os.environ.get('LOGGING', '127.0.0.1')
 LOG_LEVEL = os.environ.get('LOG_LEVEL', 'notice')
 TIMEOUT_CONNECT = os.environ.get('TIMEOUT_CONNECT', '5000')
@@ -44,7 +46,7 @@ listen_conf = Template("""
 frontend_conf = Template("""
   frontend $name
     bind *:$port $accept_proxy
-    mode http
+    mode $mode
     default_backend $backend
 """)
 
@@ -55,7 +57,7 @@ if COOKIES_ENABLED:
     #header with a specific value for each backend server as its cookie value.
     backend_conf = Template("""
   backend $backend
-    mode http
+    mode $mode
     balance $balance
     option forwardfor
     http-request set-header X-Forwarded-Port %[dst_port]
@@ -71,7 +73,7 @@ else:
     #cookies variable (is set to empty)
     backend_conf = Template("""
   backend $backend
-    mode http
+    mode $mode
     balance $balance
     option forwardfor
     http-request set-header X-Forwarded-Port %[dst_port]
@@ -93,6 +95,7 @@ listen default
 
 backend_conf = backend_conf.substitute(
     backend=BACKEND_NAME,
+    mode=BACKENDS_MODE,
     balance=BALANCE,
     httpchk=HTTPCHK,
     inter=INTER,
@@ -232,6 +235,7 @@ with open("/etc/haproxy/haproxy.cfg", "w") as configuration:
         frontend_conf.substitute(
             name=FRONTEND_NAME,
             port=FRONTEND_PORT,
+            mode=FRONTEND_MODE,
             backend=BACKEND_NAME,
             accept_proxy=accept_proxy
         )

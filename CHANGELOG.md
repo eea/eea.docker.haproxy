@@ -1,11 +1,11 @@
 # Changelog
 
-## 2017-11-30
+## 2017-11-30 (1.7-4.1)
 
 - bugfix add LOG_LEVEL to /etc/environment as well
 
 
-## 2017-11-22 (1.7-4.0
+## 2017-11-22 (1.7-4.0)
 
 - Remove chaperone in favour of cron
 

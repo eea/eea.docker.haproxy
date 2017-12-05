@@ -52,6 +52,7 @@ if [ ! -z "$FRONTEND_PORT" ]; then echo "export FRONTEND_PORT=\"$FRONTEND_PORT\"
 if [ ! -z "$HTTPCHK" ]; then echo "export HTTPCHK=\"$HTTPCHK\""  >> /etc/environment; fi
 if [ ! -z "$INTER" ]; then echo "export INTER=\"$INTER\""  >> /etc/environment; fi
 if [ ! -z "$LOGGING" ]; then echo "export LOGGING=\"$LOGGING\""  >> /etc/environment; fi
+if [ ! -z "$LOG_LEVEL" ]; then echo "export LOG_LEVEL=\"$LOG_LEVEL\""  >> /etc/environment; fi
 if [ ! -z "$PROXY_PROTOCOL_ENABLED" ]; then echo "export PROXY_PROTOCOL_ENABLED=\"$PROXY_PROTOCOL_ENABLED\""  >> /etc/environment; fi
 if [ ! -z "$RISE" ]; then echo "export RISE=\"$RISE\""  >> /etc/environment; fi
 if [ ! -z "$SERVICE_NAMES" ]; then echo "export SERVICE_NAMES=\"$SERVICE_NAMES\""  >> /etc/environment; fi

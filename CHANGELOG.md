@@ -1,5 +1,9 @@
 # Changelog
 
+## 2017-12-05 (1.8-1.0)
+
+- Upgrade to haproxy 1.8
+
 ## 2017-11-30 (1.7-4.1)
 
 - bugfix add LOG_LEVEL to /etc/environment as well

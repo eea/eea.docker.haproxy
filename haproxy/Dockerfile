@@ -1,7 +1,5 @@
-FROM haproxy:1.7
-MAINTAINER "Alin Voinea" <alin.voinea@eaudeweb.ro>
-
-
+FROM haproxy:1.8
+LABEL maintainer="EEA: IDM2 A-Team <eea-edw-a-team-alerts@googlegroups.com>"
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
@@ -19,9 +17,5 @@ RUN apt-get update \
  && sed -i '/cron.*/a local2.*                          \/proc\/1\/fd\/1' /etc/rsyslog.conf \
  && mv /docker-entrypoint.sh /haproxy-entrypoint.sh
 
-
-
 COPY src/haproxy.cfg            /tmp/
 COPY docker-entrypoint.sh src/configure.py src/track_hosts src/track_dns /
-
-

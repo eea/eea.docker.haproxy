@@ -4,16 +4,16 @@ This image is generic, thus you can obviously re-use it within
 your non-related EEA projects.
 
  - Debian: **Jessie**
- - HAProxy: **1.7**
+ - HAProxy: **1.8**
  - Expose: **5000**
 
 ### Supported tags and respective Dockerfile links
 
-  - `:latest` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/blob/master/haproxy/Dockerfile) - Debian: **Jessie**, HAProxy: **1.7**
+  - `:latest` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/blob/master/haproxy/Dockerfile) - Debian: **Jessie**, HAProxy: **1.8**
 
 ### Stable and immutable tags
 
-  - `:1.7-4.1` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/tree/1.7-4.1/haproxy/Dockerfile) - HAProxy: **1.7** Release: **4.1*
+  - `:1.8-1.0` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/tree/1.8-1.0/haproxy/Dockerfile) - HAProxy: **1.8 Release: **1*.0
 
 See [older versions](https://github.com/eea/eea.docker.haproxy/releases)
 

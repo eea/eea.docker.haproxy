@@ -1,5 +1,9 @@
 # Changelog
 
+## 2018-04-11 (1.8-1.1)
+
+- Fix entrypoint to work when haproxy.cfg externally is provided.
+
 ## 2017-12-05 (1.8-1.0)
 
 - Upgrade to haproxy 1.8

@@ -1,4 +1,4 @@
-FROM haproxy:1.8
+FROM haproxy:1.8.13
 LABEL maintainer="EEA: IDM2 A-Team <eea-edw-a-team-alerts@googlegroups.com>"
 
 RUN apt-get update \

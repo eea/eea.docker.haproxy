@@ -26,14 +26,9 @@ if ! test -e /etc/haproxy/haproxy.cfg; then
     
     fi
     
-    #enable cron logging
-    service rsyslog restart
-    
     #add crontab
     crontab /var/crontab.txt
     chmod 600 /etc/crontab
-    service cron restart
-    
     
     #Add env variables for haproxy
     echo "export PATH=$PATH"':$PATH' >> /etc/environment
@@ -62,6 +57,13 @@ if ! test -e /etc/haproxy/haproxy.cfg; then
     if [ ! -z "$TIMEOUT_CONNECT" ]; then echo "export TIMEOUT_CONNECT=\"$TIMEOUT_CONNECT\""  >> /etc/environment; fi
     if [ ! -z "$TIMEOUT_SERVER" ]; then echo "export TIMEOUT_SERVER=\"$TIMEOUT_SERVER\""  >> /etc/environment; fi
 fi
+
+
+#start logging
+service rsyslog restart
+
+#start crontab
+service cron restart
 
 exec /haproxy-entrypoint.sh "$@"
 

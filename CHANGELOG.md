@@ -1,5 +1,11 @@
 # Changelog
 
+## 2018-11-21 (1.8-1.3)
+
+- Upgrade to haproxy 1.8.14
+- Move the restart of rsyslog and cron to run at every docker start
+
+
 ## 2018-08-02 (1.8-1.2)
 
 - Upgrade to haproxy 1.8.13

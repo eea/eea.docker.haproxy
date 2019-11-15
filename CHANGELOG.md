@@ -3,7 +3,7 @@
 ## 2019-11-15 (1.8-1.4)
 
 - Fix BACKENDS_MODE typo, not reading the correct env var.
-
+- Only enable /track_hosts cron when BACKENDS env var is not present. Otherwise /track_hosts cron script will overwrite and mess up our backends
 
 ## 2018-11-21 (1.8-1.3)
 

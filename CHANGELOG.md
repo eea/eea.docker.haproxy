@@ -1,5 +1,10 @@
 # Changelog
 
+## 2019-11-15 (1.8-1.4)
+
+- Fix BACKENDS_MODE typo, not reading the correct env var.
+
+
 ## 2018-11-21 (1.8-1.3)
 
 - Upgrade to haproxy 1.8.14

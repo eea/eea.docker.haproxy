@@ -20,9 +20,8 @@ if ! test -e /etc/haproxy/haproxy.cfg; then
         # Find backend within /etc/hosts
         touch /etc/haproxy/hosts.backends
         python3 /configure.py hosts
+        echo "*/${DNS_TTL:-1} * * * * /track_hosts  | logger " > /var/crontab.txt
       fi
-    
-      echo "*/${DNS_TTL:-1} * * * * /track_hosts  | logger " > /var/crontab.txt
     
     fi
     

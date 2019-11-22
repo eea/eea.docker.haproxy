@@ -20,7 +20,7 @@ STATS_PORT = os.environ.get('STATS_PORT', '1936')
 STATS_AUTH = os.environ.get('STATS_AUTH', 'admin:admin')
 BACKENDS = os.environ.get('BACKENDS', '').split(' ')
 BACKENDS_PORT = os.environ.get('BACKENDS_PORT', '80')
-BACKENDS_MODE = os.environ.get('BACKEND_MODE', 'http')
+BACKENDS_MODE = os.environ.get('BACKENDS_MODE', 'http')
 LOGGING = os.environ.get('LOGGING', '127.0.0.1')
 LOG_LEVEL = os.environ.get('LOG_LEVEL', 'notice')
 TIMEOUT_CONNECT = os.environ.get('TIMEOUT_CONNECT', '5000')
@@ -59,10 +59,6 @@ if COOKIES_ENABLED:
   backend $backend
     mode $mode
     balance $balance
-    option forwardfor
-    http-request set-header X-Forwarded-Port %[dst_port]
-    http-request add-header X-Forwarded-Proto https if { ssl_fc }
-    option httpchk $httpchk HTTP/1.1\\r\\nHost:localhost
     default-server inter $inter fastinter $fastinter downinter $downinter fall $fall rise $rise
     cookie SRV_ID insert
 """)
@@ -75,14 +71,18 @@ else:
   backend $backend
     mode $mode
     balance $balance
-    option forwardfor
-    http-request set-header X-Forwarded-Port %[dst_port]
-    http-request add-header X-Forwarded-Proto https if { ssl_fc }
-    option httpchk $httpchk HTTP/1.1\\r\\nHost:localhost
     default-server inter $inter fastinter $fastinter downinter $downinter fall $fall rise $rise
     cookie SRV_ID prefix
 """)
     cookies = ""
+
+
+backend_type_http = Template("""
+    option forwardfor
+    http-request set-header X-Forwarded-Port %[dst_port]
+    http-request add-header X-Forwarded-Proto https if { ssl_fc }
+    option httpchk $httpchk HTTP/1.1\\r\\nHost:localhost
+""")
 
 backend_conf_plus = Template("""
     server $name-$index $host:$port $cookies check
@@ -97,7 +97,6 @@ backend_conf = backend_conf.substitute(
     backend=BACKEND_NAME,
     mode=BACKENDS_MODE,
     balance=BALANCE,
-    httpchk=HTTPCHK,
     inter=INTER,
     fastinter=FAST_INTER,
     downinter=DOWN_INTER,
@@ -105,6 +104,10 @@ backend_conf = backend_conf.substitute(
     rise=RISE
 )
 
+if BACKENDS_MODE == 'http':
+    backend_conf += backend_type_http.substitute(
+        httpchk=HTTPCHK
+    )
 
 ################################################################################
 # Backends are resolved using internal or external DNS service

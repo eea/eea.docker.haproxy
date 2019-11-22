@@ -1,10 +1,11 @@
 # Changelog
 
-## 2019-11-15 (1.8-1.4)
+## 2019-11-22 (1.8-1.4)
 
-- Fix BACKENDS_MODE typo, not reading the correct env var.
-- Only enable /track_hosts cron when BACKENDS env var is not present. Otherwise /track_hosts cron script will overwrite and mess up our backends
-- Only add http check option when backend is of type http, otherwise will break tcp backends.
+- Upgrade HAproxy to 1.8.22
+- Fix BACKENDS_MODE typo, set the default values of FRONTEND_MODE and BACKENDS_MODE to depend on each other
+- Only enable /track_hosts cron when BACKENDS and DNS_ENABLED env vars are not present. 
+- Only add http check option when backend is of type http.
 
 ## 2018-11-21 (1.8-1.3)
 

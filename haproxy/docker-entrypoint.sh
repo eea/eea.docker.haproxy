@@ -20,9 +20,8 @@ if ! test -e /etc/haproxy/haproxy.cfg; then
         # Find backend within /etc/hosts
         touch /etc/haproxy/hosts.backends
         python3 /configure.py hosts
+        echo "*/${DNS_TTL:-1} * * * * /track_hosts  | logger " > /var/crontab.txt
       fi
-    
-      echo "*/${DNS_TTL:-1} * * * * /track_hosts  | logger " > /var/crontab.txt
     
     fi
     
@@ -38,6 +37,7 @@ if ! test -e /etc/haproxy/haproxy.cfg; then
     if [ ! -z "$BACKEND_NAME" ]; then echo "export BACKEND_NAME=\"$BACKEND_NAME\""  >> /etc/environment; fi
     if [ ! -z "$BALANCE" ]; then echo "export BALANCE=\"$BALANCE\""  >> /etc/environment; fi
     if [ ! -z "$COOKIES_ENABLED" ]; then echo "export COOKIES_ENABLED=\"$COOKIES_ENABLED\""  >> /etc/environment; fi
+    if [ ! -z "$COOKIES_PARAMS" ]; then echo "export COOKIES_PARAMS=\"$COOKIES_PARAMS\""  >> /etc/environment; fi
     if [ ! -z "$DOWN_INTER" ]; then echo "export DOWN_INTER=\"$DOWN_INTER\""  >> /etc/environment; fi
     if [ ! -z "$FALL" ]; then echo "export FALL=\"$FALL\""  >> /etc/environment; fi
     if [ ! -z "$FAST_INTER" ]; then echo "export FAST_INTER=\"$FAST_INTER\""  >> /etc/environment; fi

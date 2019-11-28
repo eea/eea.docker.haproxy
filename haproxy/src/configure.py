@@ -10,17 +10,18 @@ import subprocess
 
 FRONTEND_NAME = os.environ.get('FRONTEND_NAME', 'http-frontend')
 FRONTEND_PORT = os.environ.get('FRONTEND_PORT', '5000')
-FRONTEND_MODE = os.environ.get('FRONTEND_MODE', 'http')
+FRONTEND_MODE = os.environ.get('FRONTEND_MODE', os.environ.get('BACKENDS_MODE','http'))
 BACKEND_NAME = os.environ.get('BACKEND_NAME', 'http-backend')
 BALANCE = os.environ.get('BALANCE', 'roundrobin')
 SERVICE_NAMES = os.environ.get('SERVICE_NAMES', '')
 COOKIES_ENABLED = (os.environ.get('COOKIES_ENABLED', 'false').lower() == "true")
+COOKIES_PARAMS = os.environ.get('COOKIES_PARAMS','')
 PROXY_PROTOCOL_ENABLED = (os.environ.get('PROXY_PROTOCOL_ENABLED', 'false').lower() == "true")
 STATS_PORT = os.environ.get('STATS_PORT', '1936')
 STATS_AUTH = os.environ.get('STATS_AUTH', 'admin:admin')
 BACKENDS = os.environ.get('BACKENDS', '').split(' ')
 BACKENDS_PORT = os.environ.get('BACKENDS_PORT', '80')
-BACKENDS_MODE = os.environ.get('BACKEND_MODE', 'http')
+BACKENDS_MODE = os.environ.get('BACKENDS_MODE', FRONTEND_MODE)
 LOGGING = os.environ.get('LOGGING', '127.0.0.1')
 LOG_LEVEL = os.environ.get('LOG_LEVEL', 'notice')
 TIMEOUT_CONNECT = os.environ.get('TIMEOUT_CONNECT', '5000')
@@ -59,12 +60,8 @@ if COOKIES_ENABLED:
   backend $backend
     mode $mode
     balance $balance
-    option forwardfor
-    http-request set-header X-Forwarded-Port %[dst_port]
-    http-request add-header X-Forwarded-Proto https if { ssl_fc }
-    option httpchk $httpchk HTTP/1.1\\r\\nHost:localhost
     default-server inter $inter fastinter $fastinter downinter $downinter fall $fall rise $rise
-    cookie SRV_ID insert
+    cookie SRV_ID insert $cookies_params
 """)
     cookies = "cookie \\\"@@value@@\\\""
 else:
@@ -75,14 +72,17 @@ else:
   backend $backend
     mode $mode
     balance $balance
+    default-server inter $inter fastinter $fastinter downinter $downinter fall $fall rise $rise
+    cookie SRV_ID prefix $cookies_params
+""")
+    cookies = ""
+
+backend_type_http = Template("""
     option forwardfor
     http-request set-header X-Forwarded-Port %[dst_port]
     http-request add-header X-Forwarded-Proto https if { ssl_fc }
     option httpchk $httpchk HTTP/1.1\\r\\nHost:localhost
-    default-server inter $inter fastinter $fastinter downinter $downinter fall $fall rise $rise
-    cookie SRV_ID prefix
 """)
-    cookies = ""
 
 backend_conf_plus = Template("""
     server $name-$index $host:$port $cookies check
@@ -97,14 +97,18 @@ backend_conf = backend_conf.substitute(
     backend=BACKEND_NAME,
     mode=BACKENDS_MODE,
     balance=BALANCE,
-    httpchk=HTTPCHK,
     inter=INTER,
     fastinter=FAST_INTER,
     downinter=DOWN_INTER,
     fall=FALL,
-    rise=RISE
+    rise=RISE,
+    cookies_params=COOKIES_PARAMS
 )
 
+if BACKENDS_MODE == 'http':
+    backend_conf += backend_type_http.substitute(
+        httpchk=HTTPCHK
+    )
 
 ################################################################################
 # Backends are resolved using internal or external DNS service

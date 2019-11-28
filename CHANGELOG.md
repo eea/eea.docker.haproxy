@@ -1,5 +1,10 @@
 # Changelog
 
+
+## 2019-11-28 (1.8-1.5)
+
+- Add COOKIES_PARAMS variable to give the possibility to add expiration time to cookies
+
 ## 2019-11-22 (1.8-1.4)
 
 - Upgrade HAproxy to 1.8.22

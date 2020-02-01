@@ -33,6 +33,10 @@ FAST_INTER = os.environ.get('FAST_INTER', INTER)
 DOWN_INTER = os.environ.get('DOWN_INTER', INTER)
 RISE = os.environ.get('RISE', '2')
 FALL = os.environ.get('FALL', '3')
+FRONTEND_SSL_ENABLED = os.environ.get('FRONTEND_SSL_ENABLED', 'false').lower() == 'true'
+FRONTEND_SSL_PORT = os.environ.get('FRONTEND_SSL_PORT', '6000')
+FRONTEND_SSL_PEM = os.environ.get('FRONTEND_SSL_PEM', '/etc/ssl/certs/cert.pem')
+FRONTEND_SSL_REDIRECT = os.environ.get('FRONTEND_SSL_REDIRECT', 'false').lower() == 'true'
 
 
 listen_conf = Template("""
@@ -46,8 +50,8 @@ listen_conf = Template("""
 
 frontend_conf = Template("""
   frontend $name
-    bind *:$port $accept_proxy
-    mode $mode
+    bind *:$port $accept_proxy$ssl_bind
+    mode $mode$ssl_redirect
     default_backend $backend
 """)
 
@@ -216,6 +220,14 @@ if PROXY_PROTOCOL_ENABLED:
 else:
     accept_proxy = ""
 
+ssl_redirect = ""
+if FRONTEND_SSL_ENABLED:
+    ssl_bind = "\n    bind *:%s ssl crt %s" % (FRONTEND_SSL_PORT, FRONTEND_SSL_PEM)
+    if FRONTEND_SSL_REDIRECT:
+        ssl_redirect = "\n    http-request redirect scheme https unless { ssl_fc }"
+else:
+    ssl_bind = ""
+
 with open("/etc/haproxy/haproxy.cfg", "w") as configuration:
     with open("/tmp/haproxy.cfg", "r") as default:
         conf = Template(default.read())
@@ -241,7 +253,9 @@ with open("/etc/haproxy/haproxy.cfg", "w") as configuration:
             port=FRONTEND_PORT,
             mode=FRONTEND_MODE,
             backend=BACKEND_NAME,
-            accept_proxy=accept_proxy
+            accept_proxy=accept_proxy,
+            ssl_bind=ssl_bind,
+            ssl_redirect=ssl_redirect
         )
     )
 

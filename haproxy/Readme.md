@@ -152,6 +152,10 @@ either when running the container or in a `docker-compose.yml` file.
   * `DOWN_INTER` parameter sets the interval between two consecutive health checks when the server is in the DOWN state. If not set, then `INTER` is used.
   * `RISE` number of consecutive valid health checks before considering the server as UP. Default value is `2`
   * `FALL` number of consecutive invalid health checks before considering the server as DOWN. Default value is `3`
+  * `FRONTEND_SSL_ENABLED` The option to enable SSL termination at the proxy. Default value is `false`
+  * `FRONTEND_SSL_PORT` The Port to bind the SSL enabled frontend to. Default is `6000`
+  * `FRONTEND_SSL_PEM` The PEM file which contains the SSL Certificate and Key for the SSL termination. Default is `/etc/ssl/certs/site.pem`
+  * `FRONTEND_SSL_REDIRECT` The option to enable redirection from http to https. This feature only works if http is exposed on port 80 and https on port 443. Default value is `false`
 
 
 ## Logging

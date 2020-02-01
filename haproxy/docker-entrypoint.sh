@@ -56,6 +56,10 @@ if ! test -e /etc/haproxy/haproxy.cfg; then
     if [ ! -z "$TIMEOUT_CLIENT" ]; then echo "export TIMEOUT_CLIENT=\"$TIMEOUT_CLIENT\""  >> /etc/environment; fi
     if [ ! -z "$TIMEOUT_CONNECT" ]; then echo "export TIMEOUT_CONNECT=\"$TIMEOUT_CONNECT\""  >> /etc/environment; fi
     if [ ! -z "$TIMEOUT_SERVER" ]; then echo "export TIMEOUT_SERVER=\"$TIMEOUT_SERVER\""  >> /etc/environment; fi
+    if [ ! -z "$FRONTEND_SSL_ENABLED" ]; then echo "export FRONTEND_SSL_ENABLED=\"$FRONTEND_SSL_ENABLED\""  >> /etc/environment; fi
+    if [ ! -z "$FRONTEND_SSL_PORT" ]; then echo "export FRONTEND_SSL_PORT=\"$FRONTEND_SSL_PORT\""  >> /etc/environment; fi
+    if [ ! -z "$FRONTEND_SSL_PEM" ]; then echo "export FRONTEND_SSL_PEM=\"$FRONTEND_SSL_PEM\""  >> /etc/environment; fi
+    if [ ! -z "$FRONTEND_SSL_REDIRECT" ]; then echo "export FRONTEND_SSL_REDIRECT=\"$FRONTEND_SSL_REDIRECT\""  >> /etc/environment; fi
 fi
 
 

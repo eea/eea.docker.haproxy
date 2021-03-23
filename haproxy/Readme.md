@@ -13,7 +13,9 @@ your non-related EEA projects.
 
 ### Stable and immutable tags
 
-  - `:1.8-1.4` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/tree/1.8-1.4/haproxy/Dockerfile) - HAProxy: **1.8** Release: **1.3**
+  - `:1.8-1.5` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/tree/1.8-1.5/haproxy/Dockerfile) - HAProxy: **1.8.22** Release: **1.5**
+  - `:1.8-1.6` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/tree/1.8-1.6/haproxy/Dockerfile) - HAProxy: **1.8.29** Release: **1.6**
+
 
 See [older versions](https://github.com/eea/eea.docker.haproxy/releases)
 

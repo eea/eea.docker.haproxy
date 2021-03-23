@@ -1,5 +1,9 @@
 # Changelog
 
+## 2021-03-23 (1.8-1.6)
+
+- Upgrade HAProxy to 1.8.29
+- Fix backend port when DNS_ENABLED - refs #24
 
 ## 2019-11-28 (1.8-1.5)
 
@@ -16,7 +20,6 @@
 
 - Upgrade to haproxy 1.8.14
 - Move the restart of rsyslog and cron to run at every docker start
-
 
 ## 2018-08-02 (1.8-1.2)
 

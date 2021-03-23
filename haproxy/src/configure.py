@@ -127,12 +127,12 @@ if sys.argv[1] == "dns":
         else:
             for record in records.splitlines():
                 ip = record.split()[0].decode()
-                ips[ip] = host
+                ips[ip] = (host, port)
 
     with open('/etc/haproxy/dns.backends', 'w') as bfile:
         bfile.write(' '.join(sorted(ips)))
 
-    for ip, host in ips.items():
+    for ip, (host, port) in ips.items():
         backend_conf += backend_conf_plus.substitute(
             name=host.replace(".", "-"),
             index=ip.replace(".", "-"),

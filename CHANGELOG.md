@@ -3,6 +3,7 @@
 ## 2021-03-23 (1.8-1.6)
 
 - Upgrade HAProxy to 1.8.29
+- Fixed code to work with new HAProxy configuration location - /usr/local/etc/haproxy/haproxy.cfg
 - Fix backend port when DNS_ENABLED - refs #24
 
 ## 2019-11-28 (1.8-1.5)

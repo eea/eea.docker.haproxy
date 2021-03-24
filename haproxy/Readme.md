@@ -98,7 +98,7 @@ all of your backends instead of only the first entry found:
 
 ### Use a custom configuration file mounted as a volume
 
-    $ docker run -v conf.d/haproxy.cfg:/etc/haproxy/haproxy.cfg eeacms/haproxy:latest
+    $ docker run -v conf.d/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg eeacms/haproxy:latest
 
 
 If you edit `haproxy.cfg` you can reload it without having to restart the container:
@@ -111,7 +111,7 @@ If you edit `haproxy.cfg` you can reload it without having to restart the contai
 Additionally, you can supply your own static `haproxy.cfg` file by extending the image
 
     FROM eeacms/haproxy:latest
-    COPY conf.d/haproxy.cfg /etc/haproxy/haproxy.cfg
+    COPY conf.d/haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
 
     RUN apt-get install...
 

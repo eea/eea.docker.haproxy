@@ -2,9 +2,8 @@
 
 
 
-# haproxy not directly configured within /etc/haproxy/haproxy.cfg
-if ! test -e /etc/haproxy/haproxy.cfg; then
-
+# haproxy not directly configured within /usr/local/etc/haproxy/haproxy.cfg
+if ! test -e /usr/local/etc/haproxy/haproxy.cfg; then
     if [ ! -z "$DNS_ENABLED" ]; then
       # Backends are resolved using internal or external DNS service
       touch /etc/haproxy/dns.backends
@@ -65,5 +64,5 @@ service rsyslog restart
 #start crontab
 service cron restart
 
-exec /haproxy-entrypoint.sh "$@"
+exec /usr/local/bin/haproxy-entrypoint.sh "$@"
 

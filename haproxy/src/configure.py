@@ -216,7 +216,7 @@ if PROXY_PROTOCOL_ENABLED:
 else:
     accept_proxy = ""
 
-with open("/etc/haproxy/haproxy.cfg", "w") as configuration:
+with open("/usr/local/etc/haproxy/haproxy.cfg", "w") as configuration:
     with open("/tmp/haproxy.cfg", "r") as default:
         conf = Template(default.read())
         conf = conf.substitute(

@@ -1,5 +1,6 @@
 FROM haproxy:1.8.29
 LABEL maintainer="EEA: IDM2 A-Team <eea-edw-a-team-alerts@googlegroups.com>"
+LABEL contributor="Nguyễn Văn Hiệp <nguyenhiepvan.bka@gmail.com>"
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
@@ -18,7 +19,8 @@ RUN apt-get update \
  && mv /usr/local/bin/docker-entrypoint.sh /usr/local/bin/haproxy-entrypoint.sh 
 
 COPY src/haproxy.cfg /tmp/
-COPY src/configure.py src/track_hosts src/track_dns /
+COPY src/configure.py src/track_hosts src/track_dns src/append.py /
 COPY docker-entrypoint.sh /usr/local/bin/
+
 
 

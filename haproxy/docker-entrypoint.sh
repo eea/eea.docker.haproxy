@@ -1,7 +1,6 @@
 #!/bin/bash
 
 
-
 # haproxy not directly configured within /usr/local/etc/haproxy/haproxy.cfg
 if ! test -e /usr/local/etc/haproxy/haproxy.cfg; then
     if [ ! -z "$DNS_ENABLED" ]; then
@@ -57,7 +56,8 @@ if ! test -e /usr/local/etc/haproxy/haproxy.cfg; then
     if [ ! -z "$TIMEOUT_SERVER" ]; then echo "export TIMEOUT_SERVER=\"$TIMEOUT_SERVER\""  >> /etc/environment; fi
 fi
 
-
+# merge config file
+python3 /append.py
 #start logging
 service rsyslog restart
 

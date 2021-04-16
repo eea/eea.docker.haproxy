@@ -1,0 +1,26 @@
+#COMMON CONFIG
+
+global
+  maxconn 4096
+  log 127.0.0.1   local0
+  log 127.0.0.1   local1 notice 
+  pidfile /run/haproxy.pid
+  daemon
+
+defaults
+  log global
+  mode http
+  option httplog
+  option dontlognull
+
+  timeout connect 10s
+  timeout client 30s
+  timeout server 30s
+
+  stats enable
+  # option forwardfor
+  # option http-server-close
+  stats uri /haproxyStats             # URL trang thống kê
+  stats auth admin:admin123           # user/pass truy cập trang thống kê http://localhost:8080/haproxyStats
+
+#END COMMON CONFIG

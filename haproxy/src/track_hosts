@@ -1,10 +1,15 @@
 #!/bin/bash
 
+
+if [ -f /etc/environment ]; then
+     source /etc/environment
+fi
+
 IPS_1=`cat /etc/haproxy/hosts.backends`
 python3 /configure.py hosts
 IPS_2=`cat /etc/haproxy/hosts.backends`
 
 if [ "$IPS_1" != "$IPS_2" ]; then
   echo "HOSTS backends changed: $IPS_2"
-  reload
+  kill -s HUP 1
 fi

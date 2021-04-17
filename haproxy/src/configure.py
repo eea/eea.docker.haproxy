@@ -10,16 +10,20 @@ import subprocess
 
 FRONTEND_NAME = os.environ.get('FRONTEND_NAME', 'http-frontend')
 FRONTEND_PORT = os.environ.get('FRONTEND_PORT', '5000')
+FRONTEND_MODE = os.environ.get('FRONTEND_MODE', os.environ.get('BACKENDS_MODE','http'))
 BACKEND_NAME = os.environ.get('BACKEND_NAME', 'http-backend')
 BALANCE = os.environ.get('BALANCE', 'roundrobin')
 SERVICE_NAMES = os.environ.get('SERVICE_NAMES', '')
 COOKIES_ENABLED = (os.environ.get('COOKIES_ENABLED', 'false').lower() == "true")
+COOKIES_PARAMS = os.environ.get('COOKIES_PARAMS','')
 PROXY_PROTOCOL_ENABLED = (os.environ.get('PROXY_PROTOCOL_ENABLED', 'false').lower() == "true")
 STATS_PORT = os.environ.get('STATS_PORT', '1936')
 STATS_AUTH = os.environ.get('STATS_AUTH', 'admin:admin')
 BACKENDS = os.environ.get('BACKENDS', '').split(' ')
 BACKENDS_PORT = os.environ.get('BACKENDS_PORT', '80')
+BACKENDS_MODE = os.environ.get('BACKENDS_MODE', FRONTEND_MODE)
 LOGGING = os.environ.get('LOGGING', '127.0.0.1')
+LOG_LEVEL = os.environ.get('LOG_LEVEL', 'notice')
 TIMEOUT_CONNECT = os.environ.get('TIMEOUT_CONNECT', '5000')
 TIMEOUT_CLIENT = os.environ.get('TIMEOUT_CLIENT', '50000')
 TIMEOUT_SERVER = os.environ.get('TIMEOUT_SERVER', '50000')
@@ -43,7 +47,7 @@ listen_conf = Template("""
 frontend_conf = Template("""
   frontend $name
     bind *:$port $accept_proxy
-    mode http
+    mode $mode
     default_backend $backend
 """)
 
@@ -54,14 +58,10 @@ if COOKIES_ENABLED:
     #header with a specific value for each backend server as its cookie value.
     backend_conf = Template("""
   backend $backend
-    mode http
+    mode $mode
     balance $balance
-    option forwardfor
-    http-request set-header X-Forwarded-Port %[dst_port]
-    http-request add-header X-Forwarded-Proto https if { ssl_fc }
-    option httpchk $httpchk HTTP/1.1\\r\\nHost:localhost
     default-server inter $inter fastinter $fastinter downinter $downinter fall $fall rise $rise
-    cookie SRV_ID insert
+    cookie SRV_ID insert $cookies_params
 """)
     cookies = "cookie \\\"@@value@@\\\""
 else:
@@ -70,16 +70,19 @@ else:
     #cookies variable (is set to empty)
     backend_conf = Template("""
   backend $backend
-    mode http
+    mode $mode
     balance $balance
+    default-server inter $inter fastinter $fastinter downinter $downinter fall $fall rise $rise
+    cookie SRV_ID prefix $cookies_params
+""")
+    cookies = ""
+
+backend_type_http = Template("""
     option forwardfor
     http-request set-header X-Forwarded-Port %[dst_port]
     http-request add-header X-Forwarded-Proto https if { ssl_fc }
     option httpchk $httpchk HTTP/1.1\\r\\nHost:localhost
-    default-server inter $inter fastinter $fastinter downinter $downinter fall $fall rise $rise
-    cookie SRV_ID prefix
 """)
-    cookies = ""
 
 backend_conf_plus = Template("""
     server $name-$index $host:$port $cookies check
@@ -92,15 +95,20 @@ listen default
 
 backend_conf = backend_conf.substitute(
     backend=BACKEND_NAME,
+    mode=BACKENDS_MODE,
     balance=BALANCE,
-    httpchk=HTTPCHK,
     inter=INTER,
     fastinter=FAST_INTER,
     downinter=DOWN_INTER,
     fall=FALL,
-    rise=RISE
+    rise=RISE,
+    cookies_params=COOKIES_PARAMS
 )
 
+if BACKENDS_MODE == 'http':
+    backend_conf += backend_type_http.substitute(
+        httpchk=HTTPCHK
+    )
 
 ################################################################################
 # Backends are resolved using internal or external DNS service
@@ -119,12 +127,12 @@ if sys.argv[1] == "dns":
         else:
             for record in records.splitlines():
                 ip = record.split()[0].decode()
-                ips[ip] = host
+                ips[ip] = (host, port)
 
     with open('/etc/haproxy/dns.backends', 'w') as bfile:
         bfile.write(' '.join(sorted(ips)))
 
-    for ip, host in ips.items():
+    for ip, (host, port) in ips.items():
         backend_conf += backend_conf_plus.substitute(
             name=host.replace(".", "-"),
             index=ip.replace(".", "-"),
@@ -208,11 +216,12 @@ if PROXY_PROTOCOL_ENABLED:
 else:
     accept_proxy = ""
 
-with open("/etc/haproxy/haproxy.cfg", "w") as configuration:
+with open("/usr/local/etc/haproxy/haproxy.cfg", "w") as configuration:
     with open("/tmp/haproxy.cfg", "r") as default:
         conf = Template(default.read())
         conf = conf.substitute(
             LOGGING=LOGGING,
+            LOG_LEVEL=LOG_LEVEL,
             TIMEOUT_CLIENT=TIMEOUT_CLIENT,
             TIMEOUT_CONNECT=TIMEOUT_CONNECT,
             TIMEOUT_SERVER=TIMEOUT_SERVER
@@ -230,6 +239,7 @@ with open("/etc/haproxy/haproxy.cfg", "w") as configuration:
         frontend_conf.substitute(
             name=FRONTEND_NAME,
             port=FRONTEND_PORT,
+            mode=FRONTEND_MODE,
             backend=BACKEND_NAME,
             accept_proxy=accept_proxy
         )

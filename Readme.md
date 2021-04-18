@@ -26,7 +26,7 @@ See [older versions](https://github.com/buluma/buluma.docker.haproxy/releases)
 
 ### Base docker image
 
- - [hub.docker.com](https://hub.docker.com/r/eeacms/haproxy)
+ - [hub.docker.com](https://hub.docker.com/r/buluma/buluma.docker.haproxy)
 
 
 ### Source code

@@ -3,7 +3,7 @@ services:
   haproxy:
     image: hiepnguyenvan/haproxy:latest
     volumes:
-     - ./conf.d/haproxy:/usr/local/etc/haproxy/haproxy.cfg
+     - ./conf.d/haproxy:/usr/local/etc/haproxy/conf.d/haproxy.cfg
      - ./conf.d/test:/usr/local/etc/haproxy/conf.d/test.cfg
     ports:
      - "8080:80"                         # Mở cổng 8080 public -> 80

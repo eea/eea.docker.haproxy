@@ -134,6 +134,7 @@ either when running the container or in a `docker-compose.yml` file.
   * `FRONTEND_MODE` Frontend mode - default `http` or `BACKENDS_MODE` if declared
   * `PROXY_PROTOCOL_ENABLED` The option to enable or disable accepting proxy protocol (`true` stands for enabled, `false` or anything else for disabled) - default `false`
   * `COOKIES_ENABLED` The option to enable or disable cookie-based sessions (`true` stands for enabled, `false` or anything else for disabled) - default `false`
+  * `COOKIES_NAME` Will be added on cookie declaration - default `SRV_ID`
   * `COOKIES_PARAMS` Will be added on cookie declaration - example `indirect nocache maxidle 30m maxlife 8h` or `maxlife 24h` - documentation https://cbonte.github.io/haproxy-dconv/1.8/configuration.html#4-cookie
   * `BACKEND_NAME` The label of the backend - default `http-backend`
   * `BACKENDS` The list of `server_ip:server_listening_port` to be load-balanced by HAProxy, separated by space - by default it is not set

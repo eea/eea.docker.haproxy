@@ -15,6 +15,7 @@ BACKEND_NAME = os.environ.get('BACKEND_NAME', 'http-backend')
 BALANCE = os.environ.get('BALANCE', 'roundrobin')
 SERVICE_NAMES = os.environ.get('SERVICE_NAMES', '')
 COOKIES_ENABLED = (os.environ.get('COOKIES_ENABLED', 'false').lower() == "true")
+COOKIES_NAME = os.environ.get('COOKIES_NAME','SRV_ID')
 COOKIES_PARAMS = os.environ.get('COOKIES_PARAMS','')
 PROXY_PROTOCOL_ENABLED = (os.environ.get('PROXY_PROTOCOL_ENABLED', 'false').lower() == "true")
 STATS_PORT = os.environ.get('STATS_PORT', '1936')
@@ -54,7 +55,7 @@ frontend_conf = Template("""
 
 if COOKIES_ENABLED:
     #if we choose to enable session stickiness
-    #then insert a cookie named SRV_ID to the request:
+    #then insert a cookie named $COOKIES_NAME(SRV_ID) to the request:
     #all responses from HAProxy to the client will contain a Set-Cookie:
     #header with a specific value for each backend server as its cookie value.
     backend_conf = Template("""
@@ -62,7 +63,7 @@ if COOKIES_ENABLED:
     mode $mode
     balance $balance
     default-server inter $inter fastinter $fastinter downinter $downinter fall $fall rise $rise
-    cookie SRV_ID insert $cookies_params
+    cookie $cookies_name insert $cookies_params
 """)
     cookies = "cookie \\\"@@value@@\\\""
 else:
@@ -74,7 +75,7 @@ else:
     mode $mode
     balance $balance
     default-server inter $inter fastinter $fastinter downinter $downinter fall $fall rise $rise
-    cookie SRV_ID prefix $cookies_params
+    cookie $cookies_name prefix $cookies_params
 """)
     cookies = ""
 
@@ -103,6 +104,7 @@ backend_conf = backend_conf.substitute(
     downinter=DOWN_INTER,
     fall=FALL,
     rise=RISE,
+    cookies_name=COOKIES_NAME,
     cookies_params=COOKIES_PARAMS
 )
 

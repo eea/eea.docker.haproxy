@@ -1,18 +1,20 @@
 # Changelog
 
+## 2021-06-14 (1.8-1.7)
+
+- Upgrade HAProxy to 1.8.30
+- Add `COOKIES_NAME` parameter to configure cookie name
+- Add `HTTPCHK_HOST` parameter to allow health check to include host HTTP Header - refs #20
+
 ## 2021-03-23 (1.8-1.6)
 
 - Upgrade HAProxy to 1.8.29
 - Fixed code to work with new HAProxy configuration location - /usr/local/etc/haproxy/haproxy.cfg
-- Fix backend port when DNS_ENABLED - refs #24
-
-## 2020-03-26 (1.8-1.5)
-
-- Add HTTPCHK_HOST variable to allow health check to include "Host: xyz.com" HTTP Header. Defaults to "localhost"
+- Fix backend port when `DNS_ENABLED` - refs #24
 
 ## 2019-11-28 (1.8-1.5)
 
-- Add COOKIES_PARAMS variable to give the possibility to add expiration time to cookies
+- Add `COOKIES_PARAMS` variable to give the possibility to add expiration time to cookies
 
 ## 2019-11-22 (1.8-1.4)
 

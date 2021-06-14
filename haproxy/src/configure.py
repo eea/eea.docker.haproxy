@@ -28,6 +28,7 @@ TIMEOUT_CONNECT = os.environ.get('TIMEOUT_CONNECT', '5000')
 TIMEOUT_CLIENT = os.environ.get('TIMEOUT_CLIENT', '50000')
 TIMEOUT_SERVER = os.environ.get('TIMEOUT_SERVER', '50000')
 HTTPCHK = os.environ.get('HTTPCHK', 'HEAD /')
+HTTPCHK_HOST = os.environ.get('HTTPCHK_HOST', 'localhost')
 INTER = os.environ.get('INTER', '2s')
 FAST_INTER = os.environ.get('FAST_INTER', INTER)
 DOWN_INTER = os.environ.get('DOWN_INTER', INTER)
@@ -81,7 +82,7 @@ backend_type_http = Template("""
     option forwardfor
     http-request set-header X-Forwarded-Port %[dst_port]
     http-request add-header X-Forwarded-Proto https if { ssl_fc }
-    option httpchk $httpchk HTTP/1.1\\r\\nHost:localhost
+    option httpchk $httpchk HTTP/1.1\\r\\nHost:$httpchk_host
 """)
 
 backend_conf_plus = Template("""
@@ -107,7 +108,8 @@ backend_conf = backend_conf.substitute(
 
 if BACKENDS_MODE == 'http':
     backend_conf += backend_type_http.substitute(
-        httpchk=HTTPCHK
+        httpchk=HTTPCHK,
+        httpchk_host=HTTPCHK_HOST
     )
 
 ################################################################################

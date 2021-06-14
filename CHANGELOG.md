@@ -6,6 +6,10 @@
 - Fixed code to work with new HAProxy configuration location - /usr/local/etc/haproxy/haproxy.cfg
 - Fix backend port when DNS_ENABLED - refs #24
 
+## 2020-03-26 (1.8-1.5)
+
+- Add HTTPCHK_HOST variable to allow health check to include "Host: xyz.com" HTTP Header. Defaults to "localhost"
+
 ## 2019-11-28 (1.8-1.5)
 
 - Add COOKIES_PARAMS variable to give the possibility to add expiration time to cookies

@@ -44,6 +44,7 @@ if ! test -e /usr/local/etc/haproxy/haproxy.cfg; then
     if [ ! -z "$FRONTEND_PORT" ]; then echo "export FRONTEND_PORT=\"$FRONTEND_PORT\""  >> /etc/environment; fi
     if [ ! -z "$FRONTEND_MODE" ]; then echo "export FRONTEND_MODE=\"$FRONTEND_MODE\""  >> /etc/environment; fi
     if [ ! -z "$HTTPCHK" ]; then echo "export HTTPCHK=\"$HTTPCHK\""  >> /etc/environment; fi
+    if [ ! -z "$HTTPCHK_HOST" ]; then echo "export HTTPCHK_HOST=\"$HTTPCHK_HOST\""  >> /etc/environment; fi
     if [ ! -z "$INTER" ]; then echo "export INTER=\"$INTER\""  >> /etc/environment; fi
     if [ ! -z "$LOGGING" ]; then echo "export LOGGING=\"$LOGGING\""  >> /etc/environment; fi
     if [ ! -z "$LOG_LEVEL" ]; then echo "export LOG_LEVEL=\"$LOG_LEVEL\""  >> /etc/environment; fi

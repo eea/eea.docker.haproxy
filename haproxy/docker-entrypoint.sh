@@ -54,6 +54,7 @@ if ! test -e /usr/local/etc/haproxy/haproxy.cfg; then
     if [ -n "$SERVICE_NAMES" ]; then echo "export SERVICE_NAMES=\"$SERVICE_NAMES\""  >> /etc/environment; fi
     if [ -n "$STATS_AUTH" ]; then echo "export STATS_AUTH=\"$STATS_AUTH\""  >> /etc/environment; fi
     if [ -n "$STATS_PORT" ]; then echo "export STATS_PORT=\"$STATS_PORT\""  >> /etc/environment; fi
+    if [ -n "$STATS_REFRESH" ]; then echo "export STATS_REFRESH=\"$STATS_REFRESH\""  >> /etc/environment; fi
     if [ -n "$TIMEOUT_CLIENT" ]; then echo "export TIMEOUT_CLIENT=\"$TIMEOUT_CLIENT\""  >> /etc/environment; fi
     if [ -n "$TIMEOUT_CONNECT" ]; then echo "export TIMEOUT_CONNECT=\"$TIMEOUT_CONNECT\""  >> /etc/environment; fi
     if [ -n "$TIMEOUT_SERVER" ]; then echo "export TIMEOUT_SERVER=\"$TIMEOUT_SERVER\""  >> /etc/environment; fi

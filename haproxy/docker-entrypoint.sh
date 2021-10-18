@@ -51,6 +51,7 @@ if ! test -e /usr/local/etc/haproxy/haproxy.cfg; then
     if [ -n "$LOG_LEVEL" ]; then echo "export LOG_LEVEL=\"$LOG_LEVEL\""  >> /etc/environment; fi
     if [ -n "$PROXY_PROTOCOL_ENABLED" ]; then echo "export PROXY_PROTOCOL_ENABLED=\"$PROXY_PROTOCOL_ENABLED\""  >> /etc/environment; fi
     if [ -n "$RISE" ]; then echo "export RISE=\"$RISE\""  >> /etc/environment; fi
+    if [ -n "$MAXCONN" ]; then echo "export MAXCONN=\"$MAXCONN\""  >> /etc/environment; fi
     if [ -n "$SERVICE_NAMES" ]; then echo "export SERVICE_NAMES=\"$SERVICE_NAMES\""  >> /etc/environment; fi
     if [ -n "$STATS_AUTH" ]; then echo "export STATS_AUTH=\"$STATS_AUTH\""  >> /etc/environment; fi
     if [ -n "$STATS_PORT" ]; then echo "export STATS_PORT=\"$STATS_PORT\""  >> /etc/environment; fi

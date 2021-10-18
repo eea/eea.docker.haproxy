@@ -152,6 +152,7 @@ either when running the container or in a `docker-compose.yml` file.
   * `HTTPCHK` The HTTP method and uri used to check on the servers health - default `HEAD /`
   * `HTTPCHK_HOST` Host Header override on http Health Check - default `localhost`
   * `INTER` parameter sets the interval between two consecutive health checks. If not specified, the default value is `2s`
+  * `MAXCONN` parameter sets the maximum number of connection that each backend will accept and, by default, is set to `0` (no limit)
   * `FAST_INTER` parameter sets the interval between two consecutive health checks when the server is any of the transition state (read above): UP - transitionally DOWN or DOWN - transitionally UP. If not set, then `INTER` is used.
   * `DOWN_INTER` parameter sets the interval between two consecutive health checks when the server is in the DOWN state. If not set, then `INTER` is used.
   * `RISE` number of consecutive valid health checks before considering the server as UP. Default value is `2`

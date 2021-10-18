@@ -35,6 +35,7 @@ FAST_INTER = os.environ.get('FAST_INTER', INTER)
 DOWN_INTER = os.environ.get('DOWN_INTER', INTER)
 RISE = os.environ.get('RISE', '2')
 FALL = os.environ.get('FALL', '3')
+MAXCONN = os.environ.get('MAXCONN', '2')
 
 
 listen_conf = Template("""
@@ -62,7 +63,7 @@ if COOKIES_ENABLED:
   backend $backend
     mode $mode
     balance $balance
-    default-server inter $inter fastinter $fastinter downinter $downinter fall $fall rise $rise
+    default-server inter $inter fastinter $fastinter downinter $downinter fall $fall rise $rise maxconn $maxconn
     cookie $cookies_name insert $cookies_params
 """)
     cookies = "cookie \\\"@@value@@\\\""
@@ -74,7 +75,7 @@ else:
   backend $backend
     mode $mode
     balance $balance
-    default-server inter $inter fastinter $fastinter downinter $downinter fall $fall rise $rise
+    default-server inter $inter fastinter $fastinter downinter $downinter fall $fall rise $rise maxconn $maxconn
     cookie $cookies_name prefix $cookies_params
 """)
     cookies = ""
@@ -105,7 +106,8 @@ backend_conf = backend_conf.substitute(
     fall=FALL,
     rise=RISE,
     cookies_name=COOKIES_NAME,
-    cookies_params=COOKIES_PARAMS
+    cookies_params=COOKIES_PARAMS,
+    maxconn=MAXCONN
 )
 
 if BACKENDS_MODE == 'http':

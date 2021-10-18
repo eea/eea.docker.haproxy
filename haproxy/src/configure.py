@@ -237,7 +237,9 @@ with open("/usr/local/etc/haproxy/haproxy.cfg", "w") as configuration:
 
     configuration.write(
         listen_conf.substitute(
-            port=STATS_PORT, auth=STATS_AUTH, refresh=STATS_REFRESH
+            port=STATS_PORT, 
+            auth=STATS_AUTH, 
+            refresh=STATS_REFRESH
         )
     )
 

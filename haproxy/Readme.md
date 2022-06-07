@@ -66,8 +66,7 @@ Here is a basic example of a `docker-compose.yml` file using the `eeacms/haproxy
 
 The application can be scaled to use more server instances, with `docker-compose scale`:
 
-    $ docker-compose up -d
-    $ docker-compose scale webapp=4
+    $ docker-compose up -d --scale webapp=4
 
 The results can be checked in a browser, navigating to http://localhost.
 By refresing the page multiple times it is noticeable that the IP of the server

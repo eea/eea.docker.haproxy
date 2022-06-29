@@ -1,0 +1,43 @@
+# FONTEND xử lý yêu cầu gửi đến port 80
+frontend http-in
+        bind *:80
+        acl host_test1 hdr_dom(host) -i  testhaproxy1.com  # nếu truy cập bằng domain testaproxy1.com
+        acl host_test2 hdr_dom(host) -i  testhaproxy2.com  # nếu truy cập bằng domain testaproxy2.com
+
+        use_backend bke_80_test1 if host_test1             # gửi đến backend bke_80_test1 nếu host_test1 thỏa mãn
+        use_backend bke_80_test2 if host_test2             # gửi đến backend bke_80_test2 nếu host_test2 thỏa mãn
+
+# FONTEND xử lý yêu cầu gửi đến port 443
+frontend https-in
+        bind *:443
+        mode tcp                                            # chế độ cân bằng tải tcp
+        option tcplog
+        tcp-request inspect-delay 10s
+        tcp-request content accept if { req_ssl_hello_type 1 }
+
+        acl acl1 req.ssl_sni -m end testhaproxy1.com        # nếu truy cập bằng domain testaproxy1.com
+        acl acl2 req.ssl_sni -m end testhaproxy2.com        # nếu truy cập bằng domain testaproxy1.com
+
+        use_backend bke_443 if acl1 || acl2                 # gửi request đến bke_443 nếu acl1 hoặc acl2 thỏa mãn
+
+
+backend bke_80_test1
+        balance roundrobin 
+        option httpclose
+        option forwardfor
+        server server1 yahoo.com:80 check
+
+backend bke_80_test2
+        balance roundrobin
+        option httpclose
+        option forwardfor
+        server server1 wikipedia.org:80 check
+        server server2 bing.com:80 check
+        server server3 google.com:80 check
+
+ backend bke_443
+        mode tcp
+        balance source
+        option ssl-hello-chk
+        server server1 wikipedia.org:443 check
+        #redirect scheme https if !{ ssl_fc }

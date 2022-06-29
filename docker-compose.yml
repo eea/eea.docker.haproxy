@@ -1,21 +1,14 @@
 version: "2"
 services:
   haproxy:
-    image: eeacms/haproxy
-    depends_on:
-    - webapp
+    image: hiepnguyenvan/haproxy:latest
+    volumes:
+     - ./conf.d/haproxy:/usr/local/etc/haproxy/conf.d/haproxy.cfg
+     - ./conf.d/test:/usr/local/etc/haproxy/conf.d/test.cfg
     ports:
-    - "80:8080"
-    - "1936:1936"
+     - "8080:80"                         # Mở cổng 8080 public -> 80
+     - "443:443"                         # Mở cổng 443  public -> 443
+    restart: always
     environment:
-      FRONTEND_PORT: "8080"
-      BACKENDS: "webapp"
-      BACKENDS_PORT: "8080"
-      DNS_ENABLED: "True"
-      HTTPCHK: "GET /"
-      INTER: "5s"
+      DNS_ENABLED: "true"
       LOG_LEVEL: "info"
-  webapp:
-    image: eeacms/hello
-    environment:
-      PORT: "8080"

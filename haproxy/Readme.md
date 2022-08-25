@@ -74,6 +74,9 @@ that served the page changes, as HAProxy switches between them.
 The stats page can be accessed at http://localhost:1936 where you have to log in
 using the `STATS_AUTH` authentication details (default `admin:admin`).
 
+You may want to set `STATS_REFRESH` option to let the statistics page auto update 
+i.e `STATS_REFRESH="5s"` to update every five seconds (default `0s`: no refresh)
+
 Note that it may take **up to one minute** until backends are plugged-in due to the
 minimum possible `DNS_TTL`.
 
@@ -81,12 +84,14 @@ minimum possible `DNS_TTL`.
 ### Run with backends specified as environment variable
 
     $ docker run --env BACKENDS="192.168.1.5:80 192.168.1.6:80" eeacms/haproxy
+or
+    $ docker run --env BACKENDS="192.168.1.5:80:4 192.168.1.6:80:1" eeacms/haproxy
 
 Using the `BACKENDS` variable is a way to quick-start the container.
-The servers are written as `server_ip:server_listening_port`,
+The servers are written as `server_ip:server_listening_port:weight`,
 separated by spaces (and enclosed in quotes, to avoid issues).
 The contents of the variable are evaluated in a python script that writes
-the HAProxy configuration file automatically.
+the HAProxy configuration file automatically. `weight` is optional and defaulted to `1`
 
 If there are multiple DNS records for one or more of your `BACKENDS` (e.g. when deployed using rancher-compose),
 you can use `DNS_ENABLED` environment variable. This way, haproxy will load-balance
@@ -128,6 +133,7 @@ either when running the container or in a `docker-compose.yml` file.
 
   * `STATS_PORT` The port to bind statistics to - default `1936`
   * `STATS_AUTH` The authentication details (written as `user:password` for the statistics page - default `admin:admin`
+  * `STATS_REFRESH` Refresh timing for the statistics page - default `0s` (no refresh)
   * `FRONTEND_NAME` The label of the frontend - default `http-frontend`
   * `FRONTEND_PORT` The port to bind the frontend to - default `5000`
   * `FRONTEND_MODE` Frontend mode - default `http` or `BACKENDS_MODE` if declared
@@ -136,7 +142,7 @@ either when running the container or in a `docker-compose.yml` file.
   * `COOKIES_NAME` Will be added on cookie declaration - default `SRV_ID`
   * `COOKIES_PARAMS` Will be added on cookie declaration - example `indirect nocache maxidle 30m maxlife 8h` or `maxlife 24h` - documentation https://cbonte.github.io/haproxy-dconv/1.8/configuration.html#4-cookie
   * `BACKEND_NAME` The label of the backend - default `http-backend`
-  * `BACKENDS` The list of `server_ip:server_listening_port` to be load-balanced by HAProxy, separated by space - by default it is not set
+  * `BACKENDS` The list of `server_ip:server_listening_port:weight` to be load-balanced by HAProxy, separated by space - by default it is not set - by default weight is 1
   * `BACKENDS_PORT` Port to use when auto-discovering backends, or when `BACKENDS` are specified without port - by default `80`
   * `BACKENDS_MODE` Backends mode - default `http` or `FRONTEND_MODE` if declared
   * `BALANCE` The algorithm used for load-balancing - default `roundrobin`
@@ -151,11 +157,11 @@ either when running the container or in a `docker-compose.yml` file.
   * `HTTPCHK` The HTTP method and uri used to check on the servers health - default `HEAD /`
   * `HTTPCHK_HOST` Host Header override on http Health Check - default `localhost`
   * `INTER` parameter sets the interval between two consecutive health checks. If not specified, the default value is `2s`
+  * `MAXCONN` parameter sets the maximum number of connection that each backend will accept and, by default, is set to `0` (no limit)
   * `FAST_INTER` parameter sets the interval between two consecutive health checks when the server is any of the transition state (read above): UP - transitionally DOWN or DOWN - transitionally UP. If not set, then `INTER` is used.
   * `DOWN_INTER` parameter sets the interval between two consecutive health checks when the server is in the DOWN state. If not set, then `INTER` is used.
   * `RISE` number of consecutive valid health checks before considering the server as UP. Default value is `2`
   * `FALL` number of consecutive invalid health checks before considering the server as DOWN. Default value is `3`
-
 
 ## Logging
 

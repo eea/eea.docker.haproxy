@@ -1,5 +1,10 @@
 # Changelog
 
+## 2022-08-25
+- Add  `MAXCONN` environment variable to limit max connection among backends  (default to `0` - unlimited) [sauzher]
+- Add `STATS_REFRESH` environment variable to enable auto refresh. (default to `0` - no refresh) [sauzher]
+- Add optional weight parameter for remote backends `host:port:weight` (default to `1` - all same weight) [sauzher]
+
 ## 2021-06-14 (1.8-1.7)
 
 - Upgrade HAProxy to 1.8.30

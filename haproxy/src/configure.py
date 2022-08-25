@@ -90,7 +90,7 @@ backend_type_http = Template("""
 """)
 
 backend_conf_plus = Template("""
-    server $name-$index $host:$port $cookies check
+    server $name-$index $host:$port $cookies check weight $weight
 """)
 
 health_conf = """
@@ -146,6 +146,7 @@ if sys.argv[1] == "dns":
             index=ip.replace(".", "-"),
             host=ip,
             port=port,
+            weight=1,
             cookies=cookies.replace('@@value@@', ip))
 
 ################################################################################
@@ -157,11 +158,13 @@ elif sys.argv[1] == "env":
         server_port = backend_server.split(':')
         host = server_port[0]
         port = server_port[1] if len(server_port) > 1 else BACKENDS_PORT
+        weight = server_port[2] if len(server_port) > 2 else 1
         backend_conf += backend_conf_plus.substitute(
                 name=host.replace(".", "-"),
                 index=index,
                 host=host,
                 port=port,
+                weight=weight,
                 cookies=cookies.replace('@@value@@', host))
 
 ################################################################################
@@ -212,6 +215,7 @@ elif sys.argv[1] == "hosts":
                 index=index,
                 host=host_ip,
                 port=host_port,
+                weight=1,
                 cookies=cookies.replace('@@value@@', host_ip)
         )
         index += 1

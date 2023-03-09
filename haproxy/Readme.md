@@ -3,18 +3,20 @@
 This image is generic, thus you can obviously re-use it within
 your non-related EEA projects.
 
- - Debian: **Jessie**
+ - Debian: **Buster**
  - HAProxy: **1.8**
  - Expose: **5000**
 
 ### Supported tags and respective Dockerfile links
 
-  - `:latest` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/blob/master/haproxy/Dockerfile) - Debian: **Jessie**, HAProxy: **1.8**
+  - `:latest` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/blob/master/haproxy/Dockerfile) - Debian: **Buster**, HAProxy: **1.8**
 
 ### Stable and immutable tags
 
-  - `:1.8-1.5` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/tree/1.8-1.5/haproxy/Dockerfile) - HAProxy: **1.8.22** Release: **1.5**
+  - `:1.8-1.8` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/tree/1.8-1.8/haproxy/Dockerfile) - HAProxy: **1.8.31** Release: **1.8**
+  - `:1.8-1.7` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/tree/1.8-1.7/haproxy/Dockerfile) - HAProxy: **1.8.30** Release: **1.7**
   - `:1.8-1.6` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/tree/1.8-1.6/haproxy/Dockerfile) - HAProxy: **1.8.29** Release: **1.6**
+  - `:1.8-1.5` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/tree/1.8-1.5/haproxy/Dockerfile) - HAProxy: **1.8.22** Release: **1.5**
 
 
 See [older versions](https://github.com/eea/eea.docker.haproxy/releases)

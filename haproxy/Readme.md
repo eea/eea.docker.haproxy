@@ -4,12 +4,14 @@ This image is generic, thus you can obviously re-use it within
 your non-related EEA projects.
 
  - Debian: **Buster**
- - HAProxy: **1.8**
- - Expose: **5000**
+ - HAProxy: **2.0**
+ - Expose: **1936**, **80**
 
 ### Supported tags and respective Dockerfile links
 
   - `:latest` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/blob/master/haproxy/Dockerfile) - Debian: **Buster**, HAProxy: **1.8**
+  - `:2.0` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/blob/2.0/haproxy/Dockerfile) - Debian: **Buster**, HAProxy: **2.0**
+
 
 ### Stable and immutable tags
 

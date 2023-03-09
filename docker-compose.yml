@@ -1,7 +1,7 @@
 version: "2"
 services:
   haproxy:
-    image: eeacms/haproxy
+    image: eeacms/haproxy:2.0
     depends_on:
     - webapp
     ports:

@@ -1,6 +1,8 @@
 #!/bin/bash
 
-
+#fix variable _name to not have /
+export FRONTEND_NAME="${FRONTEND_NAME//\//}"
+export BACKEND_NAME="${BACKEND_NAME//\//}"
 
 # haproxy not directly configured within /usr/local/etc/haproxy/haproxy.cfg
 if ! test -e /usr/local/etc/haproxy/haproxy.cfg; then

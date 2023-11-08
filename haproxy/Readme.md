@@ -76,6 +76,9 @@ that served the page changes, as HAProxy switches between them.
 The stats page can be accessed at http://localhost:1936 where you have to log in
 using the `STATS_AUTH` authentication details (default `admin:admin`).
 
+You may want to set `STATS_REFRESH` option to let the statistics page auto update 
+i.e `STATS_REFRESH="5s"` to update every five seconds (default `0s`: no refresh)
+
 Note that it may take **up to one minute** until backends are plugged-in due to the
 minimum possible `DNS_TTL`.
 
@@ -130,6 +133,7 @@ either when running the container or in a `docker-compose.yml` file.
 
   * `STATS_PORT` The port to bind statistics to - default `1936`
   * `STATS_AUTH` The authentication details (written as `user:password` for the statistics page - default `admin:admin`
+  * `STATS_REFRESH` Refresh timing for the statistics page - default `0s` (no refresh)
   * `FRONTEND_NAME` The label of the frontend - default `http-frontend`
   * `FRONTEND_PORT` The port to bind the frontend to - default `5000`
   * `FRONTEND_MODE` Frontend mode - default `http` or `BACKENDS_MODE` if declared

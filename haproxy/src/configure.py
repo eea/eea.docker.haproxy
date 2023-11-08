@@ -20,6 +20,7 @@ COOKIES_PARAMS = os.environ.get('COOKIES_PARAMS','')
 PROXY_PROTOCOL_ENABLED = (os.environ.get('PROXY_PROTOCOL_ENABLED', 'false').lower() == "true")
 STATS_PORT = os.environ.get('STATS_PORT', '1936')
 STATS_AUTH = os.environ.get('STATS_AUTH', 'admin:admin')
+STATS_REFRESH = os.environ.get('STATS_REFRESH', '0s')
 BACKENDS = os.environ.get('BACKENDS', '').split(' ')
 BACKENDS_PORT = os.environ.get('BACKENDS_PORT', '80')
 BACKENDS_MODE = os.environ.get('BACKENDS_MODE', FRONTEND_MODE)
@@ -44,6 +45,7 @@ listen_conf = Template("""
     stats uri /
     stats hide-version
     stats auth $auth
+    stats refresh $refresh
 """)
 
 frontend_conf = Template("""
@@ -235,7 +237,9 @@ with open("/usr/local/etc/haproxy/haproxy.cfg", "w") as configuration:
 
     configuration.write(
         listen_conf.substitute(
-            port=STATS_PORT, auth=STATS_AUTH
+            port=STATS_PORT, 
+            auth=STATS_AUTH, 
+            refresh=STATS_REFRESH
         )
     )
 

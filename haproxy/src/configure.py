@@ -20,6 +20,7 @@ COOKIES_PARAMS = os.environ.get('COOKIES_PARAMS','')
 PROXY_PROTOCOL_ENABLED = (os.environ.get('PROXY_PROTOCOL_ENABLED', 'false').lower() == "true")
 STATS_PORT = os.environ.get('STATS_PORT', '1936')
 STATS_AUTH = os.environ.get('STATS_AUTH', 'admin:admin')
+STATS_REFRESH = os.environ.get('STATS_REFRESH', '0s')
 BACKENDS = os.environ.get('BACKENDS', '').split(' ')
 BACKENDS_PORT = os.environ.get('BACKENDS_PORT', '80')
 BACKENDS_MODE = os.environ.get('BACKENDS_MODE', FRONTEND_MODE)
@@ -35,6 +36,7 @@ FAST_INTER = os.environ.get('FAST_INTER', INTER)
 DOWN_INTER = os.environ.get('DOWN_INTER', INTER)
 RISE = os.environ.get('RISE', '2')
 FALL = os.environ.get('FALL', '3')
+MAXCONN = os.environ.get('MAXCONN', '2')
 
 
 listen_conf = Template("""
@@ -44,6 +46,7 @@ listen_conf = Template("""
     stats uri /
     stats hide-version
     stats auth $auth
+    stats refresh $refresh
 """)
 
 frontend_conf = Template("""
@@ -62,7 +65,7 @@ if COOKIES_ENABLED:
   backend $backend
     mode $mode
     balance $balance
-    default-server inter $inter fastinter $fastinter downinter $downinter fall $fall rise $rise
+    default-server inter $inter fastinter $fastinter downinter $downinter fall $fall rise $rise maxconn $maxconn
     cookie $cookies_name insert $cookies_params
 """)
     cookies = "cookie \\\"@@value@@\\\""
@@ -74,7 +77,7 @@ else:
   backend $backend
     mode $mode
     balance $balance
-    default-server inter $inter fastinter $fastinter downinter $downinter fall $fall rise $rise
+    default-server inter $inter fastinter $fastinter downinter $downinter fall $fall rise $rise maxconn $maxconn
     cookie $cookies_name prefix $cookies_params
 """)
     cookies = ""
@@ -87,7 +90,7 @@ backend_type_http = Template("""
 """)
 
 backend_conf_plus = Template("""
-    server $name-$index $host:$port $cookies check
+    server $name-$index $host:$port $cookies check weight $weight
 """)
 
 health_conf = """
@@ -105,7 +108,8 @@ backend_conf = backend_conf.substitute(
     fall=FALL,
     rise=RISE,
     cookies_name=COOKIES_NAME,
-    cookies_params=COOKIES_PARAMS
+    cookies_params=COOKIES_PARAMS,
+    maxconn=MAXCONN
 )
 
 if BACKENDS_MODE == 'http':
@@ -142,6 +146,7 @@ if sys.argv[1] == "dns":
             index=ip.replace(".", "-"),
             host=ip,
             port=port,
+            weight=1,
             cookies=cookies.replace('@@value@@', ip))
 
 ################################################################################
@@ -153,11 +158,13 @@ elif sys.argv[1] == "env":
         server_port = backend_server.split(':')
         host = server_port[0]
         port = server_port[1] if len(server_port) > 1 else BACKENDS_PORT
+        weight = server_port[2] if len(server_port) > 2 else 1
         backend_conf += backend_conf_plus.substitute(
                 name=host.replace(".", "-"),
                 index=index,
                 host=host,
                 port=port,
+                weight=weight,
                 cookies=cookies.replace('@@value@@', host))
 
 ################################################################################
@@ -208,6 +215,7 @@ elif sys.argv[1] == "hosts":
                 index=index,
                 host=host_ip,
                 port=host_port,
+                weight=1,
                 cookies=cookies.replace('@@value@@', host_ip)
         )
         index += 1
@@ -235,7 +243,9 @@ with open("/usr/local/etc/haproxy/haproxy.cfg", "w") as configuration:
 
     configuration.write(
         listen_conf.substitute(
-            port=STATS_PORT, auth=STATS_AUTH
+            port=STATS_PORT,
+            auth=STATS_AUTH,
+            refresh=STATS_REFRESH
         )
     )
 

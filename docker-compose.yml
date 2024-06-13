@@ -1,21 +1,68 @@
-version: "2"
+version: '3.5'
 services:
-  haproxy:
-    image: eeacms/haproxy
+  web:
+    image: odoo:17.0
     depends_on:
-    - webapp
+      - db
+    #ports:
+    #  - "8069:8069"
+    restart: always
+    volumes:
+      - ./odoo-web-data:/var/lib/odoo
+      #- ./config:/etc/odoo
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - HOST=db
+
+  db:
+    image: 'bitnami/postgresql:13'
+    restart: always
+    #ports:
+    #  - '5432:5432'
+    volumes:
+      - './odoo-db-data-master:/bitnami/postgresql'
+    environment:
+      - POSTGRESQL_REPLICATION_MODE=master
+      - POSTGRESQL_REPLICATION_USER=repl_user
+      - POSTGRESQL_REPLICATION_PASSWORD=repl_password
+      - POSTGRESQL_MAX_CONNECTIONS=1000
+      - POSTGRESQL_STATEMENT_TIMEOUT=60000
+      - POSTGRESQL_SHARED_PRELOAD_LIBRARIES=pg_stat_statements
+      - POSTGRESQL_USERNAME=odoo
+      - POSTGRESQL_PASSWORD=odoo
+      - POSTGRESQL_DATABASE=postgres
+
+  haproxy:
+    image: self-haproxy:latest
+    restart: always
+    depends_on:
+    - web
     ports:
-    - "80:8080"
-    - "1936:1936"
+    - "9002:5000"
+    - "9003:1936"
     environment:
-      FRONTEND_PORT: "8080"
-      BACKENDS: "webapp"
-      BACKENDS_PORT: "8080"
-      DNS_ENABLED: "True"
-      HTTPCHK: "GET /"
-      INTER: "5s"
+      BACKENDS: "web:8069"
+      DNS_ENABLED: "true"
       LOG_LEVEL: "info"
-  webapp:
-    image: eeacms/hello
-    environment:
-      PORT: "8080"
+      BACKENDS_PORT: 9002
+      STATS_AUTH: admin:YbrS9eP4!j
+      TIMEOUT_SERVER: 180000
+      HTTPCHK: "GET /web/health"
+  #    #LOGGING: :9002
+  #    #VIRTUAL_HOST: 
+  #    #LETSENCRYPT_HOST:
+  #    #VIRTUAL_PORT: 1936
+  #    #BACKEND_NAME: "web"
+  #    #FRONTEND_NAME: "db"
+      #VIRTUAL_HOST: raml.sa
+      #VIRTUAL_PORT: 5000
+      #LETSENCRYPT_HOST: raml.sa
+      #LETSENCRYPT_DNS_MODE: dns-01-challenge
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+
+
+networks:
+  default:
+    external:
+      name: ejadnet

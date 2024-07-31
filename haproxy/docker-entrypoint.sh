@@ -67,7 +67,7 @@ fi
 
 
 #start logging
-service rsyslog restart
+rsyslogd
 
 #start crontab
 service cron restart

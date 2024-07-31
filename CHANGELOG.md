@@ -1,5 +1,20 @@
 # Changelog
 
+
+## 2024-07-30 (3.x - 1.0)
+
+## 2024-07-29 (2.9 - 1.1)
+
+- Upgrade HAproxy to 2.9
+- Upgrade OS to Bookworm
+- Disabled rsyslog kernel logging support in Dockerfile
+- Started rsyslogd service without service directive in docker-entrypoint.sh
+- Upgraded deprecated option: option httpchk in src/configure.py
+
+## 2024-07-29 (2.0 - 1.0)
+
+- Upgrade HAproxy to 2.0
+
 ## 2023-03-09 (1.8-1.8)
 
 - Upgrade HAproxy to 1.8.31

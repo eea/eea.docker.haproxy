@@ -1,6 +1,6 @@
-FROM haproxy:1.8.31-buster
+FROM haproxy:2.9-bookworm
 LABEL maintainer="EEA: IDM2 A-Team <eea-edw-a-team-alerts@googlegroups.com>"
-
+USER root
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
     ca-certificates \
@@ -15,6 +15,7 @@ RUN apt-get update \
  && sed -i '/#$UDPServerRun/c\$UDPServerRun 514'  /etc/rsyslog.conf \
  && sed -i '/$UDPServerRun 514/a $UDPServerAddress 127.0.0.1' /etc/rsyslog.conf \
  && sed -i '/cron.*/a local2.*                          \/proc\/1\/fd\/1' /etc/rsyslog.conf \
+ && sed -i '/^module(load="imklog")/s/^/#/' /etc/rsyslog.conf \
  && mv /usr/local/bin/docker-entrypoint.sh /usr/local/bin/haproxy-entrypoint.sh 
 
 COPY src/haproxy.cfg /tmp/

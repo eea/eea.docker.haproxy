@@ -81,10 +81,11 @@ else:
 
 backend_type_http = Template("""
     option forwardfor
+    option httpchk
     http-request set-header X-Forwarded-Port %[dst_port]
     http-request add-header X-Forwarded-Proto https if { ssl_fc }
-    option httpchk $httpchk HTTP/1.1\\r\\nHost:$httpchk_host
-""")
+http-check send meth GET uri / ver HTTP/1.1 hdr host $httpchk_host
+    """)
 
 backend_conf_plus = Template("""
     server $name-$index $host:$port $cookies check

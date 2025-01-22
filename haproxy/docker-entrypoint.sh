@@ -1,5 +1,20 @@
 #!/bin/bash
 
+set -e
+
+# first arg is `-f` or `--some-option`
+if [ "${1#-}" != "$1" ]; then
+	set -- haproxy "$@"
+fi
+
+if [ "$1" = 'haproxy' ]; then
+	shift # "haproxy"
+	# if the user wants "haproxy", let's add a couple useful flags
+	#   -W  -- "master-worker mode" (similar to the old "haproxy-systemd-wrapper"; allows for reload via "SIGUSR2")
+	#   -db -- disables background mode
+	set -- haproxy -W -db "$@"
+fi
+
 #fix variable _name to not have /
 if [ -n "$FRONTEND_NAME" ]; then
     export FRONTEND_NAME="${FRONTEND_NAME//\//}"
@@ -67,10 +82,10 @@ fi
 
 
 #start logging
-service rsyslog restart
+rsyslogd
 
 #start crontab
 service cron restart
 
-exec /usr/local/bin/haproxy-entrypoint.sh "$@"
+exec "$@"
 

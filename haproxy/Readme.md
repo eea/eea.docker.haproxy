@@ -3,16 +3,18 @@
 This image is generic, thus you can obviously re-use it within
 your non-related EEA projects.
 
- - Debian: **Buster**
- - HAProxy: **1.8**
+ - Debian: **Bullseye**
+ - HAProxy: **2.9**
  - Expose: **5000**
 
 ### Supported tags and respective Dockerfile links
 
-  - `:latest` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/blob/master/haproxy/Dockerfile) - Debian: **Buster**, HAProxy: **1.8**
+  - `:latest` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/blob/master/haproxy/Dockerfile) - Debian: **bullseye**, HAProxy: **2.9**
 
 ### Stable and immutable tags
 
+  - `:2.9-1.1` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/tree/2.9-1.1/haproxy/Dockerfile) - HAProxy: **2.9.9** Release: **1.1**
+  - `:2.0-1.0` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/tree/2.0-1.0/haproxy/Dockerfile) - HAProxy: **2.0.31** Release: **1.0**
   - `:1.8-1.8` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/tree/1.8-1.8/haproxy/Dockerfile) - HAProxy: **1.8.31** Release: **1.8**
   - `:1.8-1.7` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/tree/1.8-1.7/haproxy/Dockerfile) - HAProxy: **1.8.30** Release: **1.7**
   - `:1.8-1.6` [*Dockerfile*](https://github.com/eea/eea.docker.haproxy/tree/1.8-1.6/haproxy/Dockerfile) - HAProxy: **1.8.29** Release: **1.6**
@@ -150,7 +152,7 @@ either when running the container or in a `docker-compose.yml` file.
   * `TIMEOUT_CONNECT` the maximum time to wait for a connection attempt to a VPS to succeed. Default `5000` ms
   * `TIMEOUT_CLIENT` timeouts apply when the client is expected to acknowledge or send data during the TCP process. Default `50000` ms
   * `TIMEOUT_SERVER` timeouts apply when the server is expected to acknowledge or send data during the TCP process. Default `50000` ms
-  * `HTTPCHK` The HTTP method and uri used to check on the servers health - default `HEAD /`
+  * `HTTPCHK` The HTTP method and uri used to check on the servers health - default `meth GET uri /`
   * `HTTPCHK_HOST` Host Header override on http Health Check - default `localhost`
   * `INTER` parameter sets the interval between two consecutive health checks. If not specified, the default value is `2s`
   * `FAST_INTER` parameter sets the interval between two consecutive health checks when the server is any of the transition state (read above): UP - transitionally DOWN or DOWN - transitionally UP. If not set, then `INTER` is used.

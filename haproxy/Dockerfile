@@ -1,4 +1,4 @@
-FROM haproxy:2.9-bookworm
+FROM haproxy:2.9-dev-bullseye
 LABEL maintainer="EEA: IDM2 A-Team <eea-edw-a-team-alerts@googlegroups.com>"
 USER root
 RUN apt-get update \

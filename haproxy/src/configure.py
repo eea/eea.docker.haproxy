@@ -28,7 +28,7 @@ LOG_LEVEL = os.environ.get('LOG_LEVEL', 'notice')
 TIMEOUT_CONNECT = os.environ.get('TIMEOUT_CONNECT', '5000')
 TIMEOUT_CLIENT = os.environ.get('TIMEOUT_CLIENT', '50000')
 TIMEOUT_SERVER = os.environ.get('TIMEOUT_SERVER', '50000')
-HTTPCHK = os.environ.get('HTTPCHK', 'HEAD /')
+HTTPCHK = os.environ.get('HTTPCHK', 'meth GET uri /')
 HTTPCHK_HOST = os.environ.get('HTTPCHK_HOST', 'localhost')
 INTER = os.environ.get('INTER', '2s')
 FAST_INTER = os.environ.get('FAST_INTER', INTER)
@@ -81,10 +81,11 @@ else:
 
 backend_type_http = Template("""
     option forwardfor
+    option httpchk
     http-request set-header X-Forwarded-Port %[dst_port]
     http-request add-header X-Forwarded-Proto https if { ssl_fc }
-    option httpchk $httpchk HTTP/1.1\\r\\nHost:$httpchk_host
-""")
+    http-check send $httpchk ver HTTP/1.1 hdr host $httpchk_host
+    """)
 
 backend_conf_plus = Template("""
     server $name-$index $host:$port $cookies check

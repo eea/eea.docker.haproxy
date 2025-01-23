@@ -1,7 +1,8 @@
 version: "2"
 services:
   haproxy:
-    image: eeacms/haproxy
+    #image: eeacms/haproxy
+    image: h30
     depends_on:
     - webapp
     ports:
@@ -12,10 +13,11 @@ services:
       BACKENDS: "webapp"
       BACKENDS_PORT: "8080"
       DNS_ENABLED: "True"
-      HTTPCHK: "GET /"
+      HTTPCHK: "meth GET uri /"
       INTER: "5s"
       LOG_LEVEL: "info"
   webapp:
     image: eeacms/hello
+    scale: 4
     environment:
       PORT: "8080"

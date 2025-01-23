@@ -1,5 +1,8 @@
 # Changelog
 
+## 2025-01-16 (3.1-1.0)
+- Upgrade HAproxy to 3.1.2
+
 ## 2023-03-09 (1.8-1.8)
 
 - Upgrade HAproxy to 1.8.31
